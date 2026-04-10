@@ -777,8 +777,10 @@ export default function AdminPage() {
   useEffect(() => { if (isAuth) fetchAll(); }, [isAuth, fetchAll]);
 
   const handleLogin = () => {
-    if (inputPass.trim()) { setPasscode(inputPass); setIsAuth(true); }
+    if (inputPass.trim() === '124159') { setPasscode(inputPass); setIsAuth(true); }
+    else { alert('Passcode salah!'); }
   };
+
 
   if (!isAuth) {
     return (

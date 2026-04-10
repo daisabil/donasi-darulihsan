@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { passcode, name, date, whatsapp } = body;
     
-    if (passcode !== 'superadmin123') {
+    if (passcode !== '124159') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
