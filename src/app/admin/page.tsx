@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 
 
 type NavMenu = 'overview' | 'input-umum' | 'input-tetap' | 'migrasi' | 'riwayat';
@@ -40,15 +40,32 @@ function PaymentBadge({ method }: { method: string }) {
 
 function ActionMenu({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => void }) {
   const [open, setOpen] = useState(false);
+  const [upward, setUpward] = useState(false);
+  const btnRef = useRef<HTMLButtonElement>(null);
+
+  const handleToggle = () => {
+    if (!open && btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      setUpward(spaceBelow < 150);
+    }
+    setOpen(!open);
+  };
+
   return (
     <div className="action-menu-container">
-      <button className="btn-dots" onClick={() => setOpen(!open)} type="button">
+      <button 
+        ref={btnRef}
+        className="btn-dots" 
+        onClick={handleToggle} 
+        type="button"
+      >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
       </button>
       {open && (
         <>
           <div className="action-menu-overlay" onClick={() => setOpen(false)} />
-          <div className="action-menu-dropdown">
+          <div className={`action-menu-dropdown ${upward ? 'upward' : ''}`}>
             <button onClick={() => { onEdit(); setOpen(false); }} type="button">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
               Edit Data

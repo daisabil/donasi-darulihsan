@@ -818,13 +818,23 @@ body:has(.admin-root) {
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.08);
   z-index: 999;
-  overflow: hidden;
   padding: 6px;
   animation: slideInMenu 0.2s ease;
 }
 
+.action-menu-dropdown.upward {
+  top: auto;
+  bottom: 100%;
+  animation: slideInMenuUp 0.2s ease;
+}
+
 @keyframes slideInMenu {
   from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInMenuUp {
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
