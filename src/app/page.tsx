@@ -17,7 +17,7 @@ export default function Home() {
 
   useEffect(() => {
     // Track visitor
-    fetch('/api/visitor', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ page: '/' }) }).catch(() => {});
+    fetch('/api/visitor', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ page: '/' }) }).catch(() => { });
 
     Promise.all([
       fetch('/api/general-donations').then(r => r.json()),
@@ -339,7 +339,7 @@ export default function Home() {
         <div style={{ background: 'white', borderRadius: '8px', padding: '15px', marginBottom: '5px', border: '1px solid #eaeaea' }}>
           <p style={{ fontSize: '12px', fontWeight: 'bold', color: '#888', marginBottom: '5px', textTransform: 'uppercase' }}>DANA / E-WALLET</p>
           <p className="bank-account" style={{ color: 'var(--primary)', fontSize: '24px', margin: '5px 0' }}>085299633636</p>
-          <p style={{ fontSize: '13px', color: '#555', margin: '0 0 15px 0' }}>a.n. dai sabilarrosyad</p>
+          <p style={{ fontSize: '13px', color: '#555', margin: '0 0 15px 0' }}>a.n. da'i sabilarrosyad</p>
           <button onClick={() => {
             navigator.clipboard.writeText("085299633636");
             setCopiedDana(true);
