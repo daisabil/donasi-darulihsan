@@ -29,8 +29,7 @@ export default function RootLayout({
         <meta name="description" content="Aplikasi transparansi update galang dana lapangan SD secara real-time." />
       </head>
       <body>
-        <div className="nav-switch-container">
-          <span className="nav-switch-label">Panel</span>
+        <div className="nav-switch-container" style={!isPublic ? { top: 'auto', bottom: '20px', right: '20px', position: 'fixed', boxShadow: '0 4px 20px rgba(0,0,0,0.15)', background: 'rgba(255,255,255,0.9)', border: '1px solid #ddd' } : { position: 'fixed' }}>
           <label className="nav-switch">
             <input 
               type="checkbox" 
@@ -39,7 +38,6 @@ export default function RootLayout({
             />
             <span className="nav-slider"></span>
           </label>
-          <span className="nav-switch-label">Situs</span>
         </div>
         {children}
       </body>

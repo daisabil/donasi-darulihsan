@@ -837,7 +837,7 @@ body:has(.admin-root) {
   content: "";
   height: 18px;
   width: 18px;
-  left: 3px;
+  left: 3px; /* Back to Left as default */
   bottom: 3px;
   background-color: white;
   transition: .4s;
@@ -846,9 +846,9 @@ body:has(.admin-root) {
 }
 
 input:checked + .nav-slider {
-  background-color: var(--primary);
+  background-color: var(--primary); /* Blue for ON */
 }
 
 input:checked + .nav-slider:before {
-  transform: translateX(24px);
+  transform: translateX(24px); /* Moves RIGHT when checked (ON) */
 }
