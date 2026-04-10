@@ -1,23 +1,46 @@
-import type { Metadata } from "next";
+'use client';
+import { usePathname, useRouter } from "next/navigation";
 import "./globals.css";
-
-export const metadata: Metadata = {
-  title: "Live Update Donasi Lapangan SD",
-  description: "Aplikasi transparansi update galang dana lapangan SD secara real-time.",
-};
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+  const router = useRouter();
+
+  // Jika di root (/), maka switch "ON" (biru, bulatan kanan)
+  // Jika di /admin, maka switch "OFF" (abu, bulatan kiri)
+  const isPublic = pathname === "/";
+
+  const toggleMode = () => {
+    if (isPublic) {
+      router.push("/admin");
+    } else {
+      router.push("/");
+    }
+  };
+
   return (
     <html lang="id">
+      <head>
+        <title>Live Update Donasi Lapangan SD</title>
+        <meta name="description" content="Aplikasi transparansi update galang dana lapangan SD secara real-time." />
+      </head>
       <body>
-        <nav style={{position: 'absolute', top: 10, right: 20, zIndex: 100}}>
-          <a href="/" style={{marginRight: 15, textDecoration: 'none', color: '#00AEEF', fontWeight: 'bold'}}>Beranda Umum</a>
-          <a href="/admin" style={{textDecoration: 'none', color: '#555'}}>Dashboard Admin</a>
-        </nav>
+        <div className="nav-switch-container">
+          <span className="nav-switch-label">Panel</span>
+          <label className="nav-switch">
+            <input 
+              type="checkbox" 
+              checked={isPublic} 
+              onChange={toggleMode} 
+            />
+            <span className="nav-slider"></span>
+          </label>
+          <span className="nav-switch-label">Situs</span>
+        </div>
         {children}
       </body>
     </html>
