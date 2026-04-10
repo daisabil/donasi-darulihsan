@@ -42,3 +42,46 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Gagal mendaftar donatur' }, { status: 500 });
   }
 }
+export async function DELETE(request: Request) {
+  try {
+    const body = await request.json();
+    const { passcode, id } = body;
+    
+    if (passcode !== '124159') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    await prisma.fixedDonor.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: 'Failed to delete' }, { status: 500 });
+  }
+}
+
+export async function PATCH(request: Request) {
+  try {
+    const body = await request.json();
+    const { passcode, id, name, whatsapp } = body;
+    
+    if (passcode !== '124159') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const updated = await prisma.fixedDonor.update({
+      where: { id },
+      data: {
+        name,
+        whatsapp,
+      },
+    });
+
+    return NextResponse.json(updated);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: 'Failed to update' }, { status: 500 });
+  }
+}

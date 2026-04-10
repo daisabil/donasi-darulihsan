@@ -106,56 +106,74 @@ function EditModal({ isOpen, onClose, data, passcode, onRefresh }: { isOpen: boo
     }
   };
 
+  const isDonorProfile = !!data.startDate;
+
   return (
     <div className="modal-overlay">
       <div className="modal-content">
         <div className="modal-header">
-          <h3>Edit Data {isMigrasi ? 'Migrasi' : `Donasi ${data.cat}`}</h3>
+          <h3>Edit {isDonorProfile ? 'Profil Donatur' : isMigrasi ? 'Data Migrasi' : `Data Donasi ${data.cat}`}</h3>
           <button className="close-btn" onClick={onClose}>✕</button>
         </div>
         <form onSubmit={handleSave} className="admin-form" style={{ padding: '0' }}>
           <div className="form-grid">
-            {isUmum && (
-              <div className="full-width">
-                <label>Nama Donatur</label>
-                <input type="text" value={form.name || ''} onChange={e => setForm({ ...form, name: e.target.value })} required />
-              </div>
-            )}
-            <div>
-              <label>Tanggal & Waktu</label>
-              <input type="datetime-local" value={form.date || ''} onChange={e => setForm({ ...form, date: e.target.value })} required />
-            </div>
-            {isMigrasi ? (
+            {isDonorProfile ? (
               <>
-                <div>
-                  <label>Dari Metode</label>
-                  <select value={form.fromMethod} onChange={e => setForm({ ...form, fromMethod: e.target.value })}>
-                    {PAYMENT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
-                  </select>
+                <div className="full-width">
+                  <label>Nama Lengkap</label>
+                  <input type="text" value={form.name || ''} onChange={e => setForm({ ...form, name: e.target.value })} required />
                 </div>
-                <div>
-                  <label>Ke Metode</label>
-                  <select value={form.toMethod} onChange={e => setForm({ ...form, toMethod: e.target.value })}>
-                    {PAYMENT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
-                  </select>
+                <div className="full-width">
+                  <label>Nomor WhatsApp</label>
+                  <input type="text" placeholder="628123..." value={form.whatsapp || ''} onChange={e => setForm({ ...form, whatsapp: e.target.value })} />
+                  <p style={{ fontSize: '11px', color: '#6b7280', marginTop: '4px' }}>Gunakan format angka saja (contoh: 62852...)</p>
                 </div>
               </>
             ) : (
-              <div>
-                <label>Metode Pembayaran</label>
-                <select value={form.paymentMethod || ''} onChange={e => setForm({ ...form, paymentMethod: e.target.value })}>
-                  {PAYMENT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
-                </select>
-              </div>
+              <>
+                {isUmum && (
+                  <div className="full-width">
+                    <label>Nama Donatur</label>
+                    <input type="text" value={form.name || ''} onChange={e => setForm({ ...form, name: e.target.value })} required />
+                  </div>
+                )}
+                <div>
+                  <label>Tanggal & Waktu</label>
+                  <input type="datetime-local" value={form.date || ''} onChange={e => setForm({ ...form, date: e.target.value })} required />
+                </div>
+                {isMigrasi ? (
+                  <>
+                    <div>
+                      <label>Dari Metode</label>
+                      <select value={form.fromMethod} onChange={e => setForm({ ...form, fromMethod: e.target.value })}>
+                        {PAYMENT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label>Ke Metode</label>
+                      <select value={form.toMethod} onChange={e => setForm({ ...form, toMethod: e.target.value })}>
+                        {PAYMENT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
+                      </select>
+                    </div>
+                  </>
+                ) : (
+                  <div>
+                    <label>Metode Pembayaran</label>
+                    <select value={form.paymentMethod || ''} onChange={e => setForm({ ...form, paymentMethod: e.target.value })}>
+                      {PAYMENT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
+                    </select>
+                  </div>
+                )}
+                <div>
+                  <label>Jumlah (Rp)</label>
+                  <input type="number" value={form.amount || ''} onChange={e => setForm({ ...form, amount: e.target.value })} required min="1000" />
+                </div>
+                <div className="full-width">
+                  <label>Catatan</label>
+                  <input type="text" value={form.notes || ''} onChange={e => setForm({ ...form, notes: e.target.value })} />
+                </div>
+              </>
             )}
-            <div>
-              <label>Jumlah (Rp)</label>
-              <input type="number" value={form.amount || ''} onChange={e => setForm({ ...form, amount: e.target.value })} required min="1000" />
-            </div>
-            <div className="full-width">
-              <label>Catatan</label>
-              <input type="text" value={form.notes || ''} onChange={e => setForm({ ...form, notes: e.target.value })} />
-            </div>
           </div>
           <div style={{ display: 'flex', gap: '10px', marginTop: '24px' }}>
             <button type="button" className="btn-submit" onClick={onClose} style={{ flex: 1, background: '#f3f4f6', color: '#374151' }}>Batal</button>
@@ -793,9 +811,10 @@ function MigrasiSection({ passcode, gDonations, fDonations, migrations, onRefres
 }
 
 // ── RIWAYAT SECTION ───────────────────────────────────────────────────
-function RiwayatSection({ passcode, gDonations, fDonations, onRefresh, onEdit }: {
-  passcode: string; gDonations: any[]; fDonations: any[]; onRefresh: () => void; onEdit: (item: any) => void;
+function RiwayatSection({ passcode, gDonations, fDonations, fixedDonors, onRefresh, onEdit }: {
+  passcode: string; gDonations: any[]; fDonations: any[]; fixedDonors: any[]; onRefresh: () => void; onEdit: (item: any) => void;
 }) {
+  const [view, setView] = useState<'tx' | 'donors'>('tx');
   const [filter, setFilter] = useState<'all' | 'umum' | 'tetap'>('all');
   const [filterMethod, setFilterMethod] = useState('semua');
   const [filterMonth, setFilterMonth] = useState('semua');
@@ -823,67 +842,158 @@ function RiwayatSection({ passcode, gDonations, fDonations, onRefresh, onEdit }:
     return true;
   }), [allTxs, filter, filterMethod, filterMonth, search]);
 
-  const handleDelete = async (id: string, cat: 'Umum' | 'Tetap') => {
+  const handleDeleteTx = async (id: string, cat: 'Umum' | 'Tetap') => {
     if (!confirm('Yakin ingin hapus data donasi ini?')) return;
     const ep = cat === 'Umum' ? '/api/general-donations' : '/api/fixed-donations';
     const res = await fetch(ep, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ passcode, id }) });
     if (res.ok) onRefresh(); else alert('Gagal menghapus!');
   };
 
-  const filterBtn = (active: boolean) => ({
-    padding: '7px 14px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px',
-    fontWeight: 600, background: active ? 'var(--primary)' : '#f3f4f6',
-    color: active ? 'white' : '#6b7280', transition: '0.15s',
-  });
+  const handleDeleteDonor = async (id: string) => {
+    if (!confirm('Hapus donatur ini akan menghapus seluruh data identitasnya? (Data setoran tidak akan terhapus, namun tidak akan memiliki nama donatur lagi)')) return;
+    const res = await fetch('/api/fixed-donors', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ passcode, id }) });
+    if (res.ok) onRefresh(); else alert('Gagal menghapus!');
+  };
+
+  const donorTotals = useMemo(() => {
+    const map: Record<string, number> = {};
+    fDonations.forEach(d => {
+      map[d.donorId] = (map[d.donorId] || 0) + d.amount;
+    });
+    return map;
+  }, [fDonations]);
+
+  const copyWA = (wa: string) => {
+    if (!wa) return;
+    navigator.clipboard.writeText(wa);
+    alert('Nomor WhatsApp disalin!');
+  };
+
+  const chatWA = (wa: string) => {
+    if (!wa) return;
+    window.open(`https://wa.me/${wa.replace(/\D/g, '')}`, '_blank');
+  };
 
   return (
     <div className="admin-panel">
       <div className="admin-panel-header">
-        <div><h3>Riwayat Seluruh Transaksi</h3><p>{filtered.length} dari {allTxs.length} transaksi</p></div>
-      </div>
-      <div style={{ padding: '14px 24px', borderBottom: '1px solid #f3f4f6', display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
-        <input type="text" placeholder="Cari nama donatur..." value={search} onChange={e => setSearch(e.target.value)}
-          style={{ flex: '1', minWidth: '180px', margin: 0, padding: '8px 12px', borderRadius: '8px', border: '1.5px solid var(--border)', fontSize: '13px' }} />
-        <div style={{ display: 'flex', gap: '4px' }}>
-          {(['all', 'umum', 'tetap'] as const).map(f => (
-            <button key={f} onClick={() => setFilter(f)} style={filterBtn(filter === f)}>
-              {f === 'all' ? 'Semua' : f === 'umum' ? 'Umum' : 'Tetap'}
-            </button>
-          ))}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+          <div>
+            <h3>{view === 'tx' ? 'Riwayat Seluruh Transaksi' : 'Daftar Donatur Tetap'}</h3>
+            <p>{view === 'tx' ? `${filtered.length} dari ${allTxs.length} transaksi` : `${fixedDonors.length} donatur terdaftar`}</p>
+          </div>
+          <button 
+            onClick={() => setView(view === 'tx' ? 'donors' : 'tx')}
+            style={{ 
+              padding: '8px 16px', borderRadius: '8px', border: '1.5px solid var(--primary)', 
+              background: 'white', color: 'var(--primary)', fontWeight: 700, fontSize: '13px', cursor: 'pointer'
+            }}
+          >
+            {view === 'tx' ? 'Lihat Daftar Donatur' : 'Lihat Riwayat Transaksi'}
+          </button>
         </div>
-        <select value={filterMethod} onChange={e => setFilterMethod(e.target.value)} style={{ padding: '8px 12px', border: '1.5px solid var(--border)', borderRadius: '8px', fontSize: '13px', margin: 0, width: 'auto' }}>
-          <option value="semua">Semua Metode</option>
-          {PAYMENT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
-        </select>
-        <select value={filterMonth} onChange={e => setFilterMonth(e.target.value)} style={{ padding: '8px 12px', border: '1.5px solid var(--border)', borderRadius: '8px', fontSize: '13px', margin: 0, width: 'auto' }}>
-          <option value="semua">Semua Bulan</option>
-          {months.map(b => {
-            const [y, m] = b.split('-');
-            return <option key={b} value={b}>{new Date(parseInt(y), parseInt(m) - 1, 1).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}</option>;
-          })}
-        </select>
       </div>
-      <div style={{ overflowX: 'auto' }}>
-        <table className="admin-table">
-          <thead><tr><th>Nama Donatur</th><th>Kategori</th><th>Metode</th><th>Tanggal</th><th style={{ textAlign: 'right' }}>Jumlah</th><th>Catatan</th><th style={{ textAlign: 'center' }}>EDIT</th></tr></thead>
-          <tbody>
-            {filtered.length === 0 && <tr><td colSpan={7} style={{ textAlign: 'center', color: '#9ca3af', padding: '32px' }}>Tidak ada data yang ditemukan.</td></tr>}
-            {filtered.map(d => (
-              <tr key={d.id}>
-                <td style={{ fontWeight: 600, color: '#1f2937' }}>{d.name}</td>
-                <td><span className={`badge ${d.cat === 'Umum' ? 'badge-umum' : 'badge-tetap'}`}>{d.cat}</span></td>
-                <td><PaymentBadge method={d.paymentMethod} /></td>
-                <td style={{ fontSize: '12px', whiteSpace: 'nowrap', color: '#6b7280' }}>{formatTgl(d.date)}</td>
-                <td style={{ textAlign: 'right', fontWeight: 700, color: 'var(--primary)', whiteSpace: 'nowrap' }}>{formatRp(d.amount)}</td>
-                <td style={{ fontSize: '12px', color: '#6b7280' }}>{d.notes || '-'}</td>
-                <td style={{ textAlign: 'center' }}>
-                  <ActionMenu onEdit={() => onEdit(d)} onDelete={() => handleDelete(d.id, d.cat)} />
-                </td>
+      
+      {view === 'tx' ? (
+        <>
+          <div style={{ padding: '14px 24px', borderBottom: '1px solid #f3f4f6', display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+            <input type="text" placeholder="Cari nama donatur..." value={search} onChange={e => setSearch(e.target.value)}
+              style={{ flex: '1', minWidth: '180px', margin: 0, padding: '8px 12px', borderRadius: '8px', border: '1.5px solid var(--border)', fontSize: '13px' }} />
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '12px', color: '#6b7280', fontWeight: 600 }}>Kategori:</span>
+              <select 
+                value={filter} 
+                onChange={e => setFilter(e.target.value as any)} 
+                style={{ padding: '8px 12px', border: '1.5px solid var(--border)', borderRadius: '8px', fontSize: '13px', margin: 0, width: 'auto', background: '#f9fafb' }}
+              >
+                <option value="all">Semua Kategori</option>
+                <option value="umum">Donasi Umum</option>
+                <option value="tetap">Donasi Tetap</option>
+              </select>
+            </div>
+
+            <select value={filterMethod} onChange={e => setFilterMethod(e.target.value)} style={{ padding: '8px 12px', border: '1.5px solid var(--border)', borderRadius: '8px', fontSize: '13px', margin: 0, width: 'auto' }}>
+              <option value="semua">Semua Metode</option>
+              {PAYMENT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
+            </select>
+            <select value={filterMonth} onChange={e => setFilterMonth(e.target.value)} style={{ padding: '8px 12px', border: '1.5px solid var(--border)', borderRadius: '8px', fontSize: '13px', margin: 0, width: 'auto' }}>
+              <option value="semua">Semua Bulan</option>
+              {months.map(b => {
+                const [y, m] = b.split('-');
+                return <option key={b} value={b}>{new Date(parseInt(y), parseInt(m) - 1, 1).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}</option>;
+              })}
+            </select>
+          </div>
+          <div style={{ overflowX: 'auto' }}>
+            <table className="admin-table">
+              <thead><tr><th>Nama Donatur</th><th>Kategori</th><th>Metode</th><th>Tanggal</th><th style={{ textAlign: 'right' }}>Jumlah</th><th>Catatan</th><th style={{ textAlign: 'center' }}>EDIT</th></tr></thead>
+              <tbody>
+                {filtered.length === 0 && <tr><td colSpan={7} style={{ textAlign: 'center', color: '#9ca3af', padding: '32px' }}>Tidak ada data yang ditemukan.</td></tr>}
+                {filtered.map(d => (
+                  <tr key={d.id}>
+                    <td style={{ fontWeight: 600, color: '#1f2937' }}>{d.name}</td>
+                    <td><span className={`badge ${d.cat === 'Umum' ? 'badge-umum' : 'badge-tetap'}`}>{d.cat}</span></td>
+                    <td><PaymentBadge method={d.paymentMethod} /></td>
+                    <td style={{ fontSize: '12px', whiteSpace: 'nowrap', color: '#6b7280' }}>{formatTgl(d.date)}</td>
+                    <td style={{ textAlign: 'right', fontWeight: 700, color: 'var(--primary)', whiteSpace: 'nowrap' }}>{formatRp(d.amount)}</td>
+                    <td style={{ fontSize: '12px', color: '#6b7280' }}>{d.notes || '-'}</td>
+                    <td style={{ textAlign: 'center' }}>
+                      <ActionMenu onEdit={() => onEdit(d)} onDelete={() => handleDeleteTx(d.id, d.cat)} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      ) : (
+        <div style={{ overflowX: 'auto' }}>
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Nama Donatur</th>
+                <th>Nomor WhatsApp</th>
+                <th style={{ textAlign: 'center' }}>Direct WA</th>
+                <th style={{ textAlign: 'right' }}>Total Donasi</th>
+                <th style={{ textAlign: 'center' }}>EDIT</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {fixedDonors.length === 0 && <tr><td colSpan={5} style={{ textAlign: 'center', color: '#9ca3af', padding: '32px' }}>Belum ada donatur tetap terdaftar.</td></tr>}
+              {fixedDonors.map(fd => (
+                <tr key={fd.id}>
+                  <td style={{ fontWeight: 600, color: '#1f2937' }}>{fd.name}</td>
+                  <td>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ color: '#6b7280', fontSize: '13px' }}>{fd.whatsapp || '-'}</span>
+                      {fd.whatsapp && (
+                        <button onClick={() => copyWA(fd.whatsapp)} title="Salin nomor" style={{ background: '#f3f4f6', border: 'none', padding: '4px', borderRadius: '4px', cursor: 'pointer', display: 'flex' }}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                  <td style={{ textAlign: 'center' }}>
+                    {fd.whatsapp && (
+                      <button onClick={() => chatWA(fd.whatsapp)} style={{ background: '#22c55e', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '11px', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                        WhatsApp
+                      </button>
+                    )}
+                  </td>
+                  <td style={{ textAlign: 'right', fontWeight: 700, color: 'var(--primary)', fontSize: '15px' }}>
+                    {formatRp(donorTotals[fd.id] || 0)}
+                  </td>
+                  <td style={{ textAlign: 'center' }}>
+                    <ActionMenu onEdit={() => onEdit(fd)} onDelete={() => handleDeleteDonor(fd.id)} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
@@ -951,7 +1061,7 @@ export default function AdminPage() {
     { id: 'input-umum', label: 'Input Donasi Umum' },
     { id: 'input-tetap', label: 'Input Donatur Tetap' },
     { id: 'migrasi', label: 'Migrasi Dana' },
-    { id: 'riwayat', label: 'Riwayat & Hapus' },
+    { id: 'riwayat', label: 'Riwayat & Edit' },
   ];
 
   const pageTitle: Record<NavMenu, string> = {
@@ -959,7 +1069,7 @@ export default function AdminPage() {
     'input-umum': 'Input Donasi Umum',
     'input-tetap': 'Input Donatur Tetap',
     'migrasi': 'Migrasi Dana',
-    'riwayat': 'Riwayat Transaksi',
+    'riwayat': 'Riwayat & Kelola Donatur',
   };
 
   // Nav icon SVGs (no emoji)
@@ -1057,7 +1167,7 @@ export default function AdminPage() {
           {menu === 'input-umum' && <InputUmumSection passcode={passcode} onSuccess={fetchAll} />}
           {menu === 'input-tetap' && <InputTetapSection passcode={passcode} fixedDonors={fixedDonors} onSuccess={fetchAll} onRefreshDonors={fetchAll} />}
           {menu === 'migrasi' && <MigrasiSection passcode={passcode} gDonations={gDonations} fDonations={fDonations} migrations={migrations} onRefresh={fetchAll} onEdit={(it) => { setEditItem(it); setIsEditOpen(true); }} />}
-          {menu === 'riwayat' && <RiwayatSection passcode={passcode} gDonations={gDonations} fDonations={fDonations} onRefresh={fetchAll} onEdit={(it) => { setEditItem(it); setIsEditOpen(true); }} />}
+          {menu === 'riwayat' && <RiwayatSection passcode={passcode} gDonations={gDonations} fDonations={fDonations} fixedDonors={fixedDonors} onRefresh={fetchAll} onEdit={(it) => { setEditItem(it); setIsEditOpen(true); }} />}
         </div>
 
         <EditModal 
