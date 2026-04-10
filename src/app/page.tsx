@@ -338,10 +338,10 @@ export default function Home() {
         {/* DANA Section */}
         <div style={{ background: 'white', borderRadius: '8px', padding: '15px', marginBottom: '5px', border: '1px solid #eaeaea' }}>
           <p style={{ fontSize: '12px', fontWeight: 'bold', color: '#888', marginBottom: '5px', textTransform: 'uppercase' }}>DANA / E-WALLET</p>
-          <p className="bank-account" style={{ color: 'var(--primary)', fontSize: '24px', margin: '5px 0' }}>081234567890</p>
+          <p className="bank-account" style={{ color: 'var(--primary)', fontSize: '24px', margin: '5px 0' }}>6185299633636</p>
           <p style={{ fontSize: '13px', color: '#555', margin: '0 0 15px 0' }}>a.n. Bendahara Panitia</p>
           <button onClick={() => {
-            navigator.clipboard.writeText("081234567890");
+            navigator.clipboard.writeText("6185299633636");
             setCopiedDana(true);
             setTimeout(() => setCopiedDana(false), 2000);
           }} style={{ background: '#e8f7fd', color: 'var(--primary)', border: '1px solid var(--primary)', borderRadius: '6px', padding: '8px 15px', fontWeight: 'bold', cursor: 'pointer', fontSize: '13px', display: 'inline-block' }}>
@@ -351,10 +351,10 @@ export default function Home() {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-        <a href="https://wa.me/6281234567890?text=Assalamualaikum,%20saya%20ingin%20mengkonfirmasi%20donasi%20yang%20baru%20saja%20saya%20kirimkan." target="_blank" className="btn-wa">
+        <a href="https://wa.me/6185299633636?text=Assalamualaikum,%20saya%20ingin%20mengkonfirmasi%20donasi%20yang%20baru%20saja%20saya%20kirimkan." target="_blank" className="btn-wa">
           Konfirmasi Donasi (WhatsApp)
         </a>
-        <a href="https://wa.me/6281234567890?text=Assalamualaikum,%20saya%20ingin%20mendaftar%20menjadi%20donatur%20tetap%20untuk%20pembangunan%20lapangan." target="_blank" className="btn-wa">
+        <a href="https://wa.me/6185299633636?text=Assalamualaikum,%20saya%20ingin%20mendaftar%20menjadi%20donatur%20tetap%20untuk%20pembangunan%20lapangan." target="_blank" className="btn-wa">
           Daftar Jadi Donatur Tetap
         </a>
       </div>
