@@ -132,7 +132,7 @@ export default function Home() {
         </div>
 
         <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', alignItems: 'center' }}>
-          <label style={{ fontWeight: 'bold' }}>Filter Bulan:</label>
+          <label style={{ fontWeight: 'bold' }}>Filter:</label>
           <select value={filterMonth} onChange={(e) => setFilterMonth(e.target.value)} style={{ margin: 0, width: 'auto', padding: '5px 10px' }}>
             <option value="semua">Semua Waktu</option>
             {opsiBulan.map(b => {
@@ -203,7 +203,7 @@ export default function Home() {
         </div>
 
         <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', alignItems: 'center' }}>
-          <label style={{ fontWeight: 'bold' }}>Aktivitas Terakhir di Bulan:</label>
+          <label style={{ fontWeight: 'bold' }}>Filter:</label>
           <select value={filterMonth} onChange={(e) => setFilterMonth(e.target.value)} style={{ margin: 0, width: 'auto', padding: '5px 10px' }}>
             <option value="semua">Semua Waktu</option>
             {opsiBulan.map(b => {
