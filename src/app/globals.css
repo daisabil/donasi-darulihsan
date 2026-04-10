@@ -338,7 +338,7 @@ body:has(.admin-root) {
   border: 1px solid var(--border);
   box-shadow: var(--card-shadow);
   margin-bottom: 24px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .admin-panel-header {

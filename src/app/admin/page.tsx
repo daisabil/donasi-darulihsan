@@ -108,17 +108,19 @@ function EditModal({ isOpen, onClose, data, passcode, onRefresh }: { isOpen: boo
 
   if (!isOpen || !data) return null;
 
-  const isUmum = data.cat === 'Umum';
-  const isTetap = data.cat === 'Tetap';
-  const isMigrasi = !!data.fromMethod;
+  // Determine type FIRST — all must be declared before handleSave
+  const isDonorProfile = !!data.startDate;
+  const isUmum = !isDonorProfile && data.cat === 'Umum';
+  const isTetap = !isDonorProfile && data.cat === 'Tetap';
+  const isMigrasi = !isDonorProfile && !!data.fromMethod;
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     let ep = '';
     if (isDonorProfile) ep = '/api/fixed-donors';
-    else if (isUmum) ep = '/api/general-donations';
-    else if (isTetap) ep = '/api/fixed-donations';
+    else if (isUmum)   ep = '/api/general-donations';
+    else if (isTetap)  ep = '/api/fixed-donations';
     else if (isMigrasi) ep = '/api/migrations';
 
     if (!ep) { setLoading(false); alert('Tipe data tidak dikenali.'); return; }
@@ -137,11 +139,6 @@ function EditModal({ isOpen, onClose, data, passcode, onRefresh }: { isOpen: boo
       alert(j.error || 'Gagal menyimpan perubahan.');
     }
   };
-
-  const isDonorProfile = !!data.startDate;
-  const isUmum = !isDonorProfile && data.cat === 'Umum';
-  const isTetap = !isDonorProfile && data.cat === 'Tetap';
-  const isMigrasi = !isDonorProfile && !!data.fromMethod;
 
   return (
     <div className="modal-overlay">
@@ -173,20 +170,20 @@ function EditModal({ isOpen, onClose, data, passcode, onRefresh }: { isOpen: boo
                   </div>
                 )}
                 <div>
-                  <label>Tanggal & Waktu</label>
+                  <label>Tanggal &amp; Waktu</label>
                   <input type="datetime-local" value={form.date || ''} onChange={e => setForm({ ...form, date: e.target.value })} required />
                 </div>
                 {isMigrasi ? (
                   <>
                     <div>
                       <label>Dari Metode</label>
-                      <select value={form.fromMethod} onChange={e => setForm({ ...form, fromMethod: e.target.value })}>
+                      <select value={form.fromMethod || ''} onChange={e => setForm({ ...form, fromMethod: e.target.value })}>
                         {PAYMENT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
                       </select>
                     </div>
                     <div>
                       <label>Ke Metode</label>
-                      <select value={form.toMethod} onChange={e => setForm({ ...form, toMethod: e.target.value })}>
+                      <select value={form.toMethod || ''} onChange={e => setForm({ ...form, toMethod: e.target.value })}>
                         {PAYMENT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
                       </select>
                     </div>
