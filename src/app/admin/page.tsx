@@ -798,7 +798,10 @@ export default function AdminPage() {
           <h2>Admin Darul Ihsan</h2>
           <p>Masukkan passcode untuk mengakses dashboard pengelolaan donasi</p>
           <input
-            type="password" placeholder="Masukkan passcode"
+            type="password" 
+            inputMode="numeric"
+            pattern="[0-9]*"
+            placeholder="Masukkan passcode"
             value={inputPass} onChange={e => setInputPass(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleLogin()}
           />
