@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model GeneralDonation {
+  id            String   @id @default(cuid())
+  date          DateTime @default(now())
+  name          String
+  amount        Float
+  paymentMethod String   // "Cash" | "Transfer Bank" | "E-Wallet DANA"
+  notes         String?
+  createdAt     DateTime @default(now())
+}
+
+model FixedDonor {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  whatsapp      String?
+  startDate     DateTime @default(now())
+  createdAt     DateTime @default(now())
+  
+  // Relation
+  donations     FixedDonation[]
+}
+
+model FixedDonation {
+  id            String   @id @default(cuid())
+  donorId       String
+  donor         FixedDonor @relation(fields: [donorId], references: [id], onDelete: Cascade)
+  date          DateTime @default(now())
+  amount        Float
+  paymentMethod String   // "Cash" | "Transfer Bank" | "E-Wallet DANA"
+  notes         String?
+  createdAt     DateTime @default(now())
+}
+
+model MoneyMigration {
+  id          String   @id @default(cuid())
+  date        DateTime @default(now())
+  fromMethod  String   // "Cash" | "Transfer Bank" | "E-Wallet DANA"
+  toMethod    String   // "Cash" | "Transfer Bank" | "E-Wallet DANA"
+  amount      Float
+  notes       String?
+  createdAt   DateTime @default(now())
+}
+
+model PageView {
+  id        String   @id @default(cuid())
+  date      DateTime @default(now())
+  page      String   @default("/")
+}
