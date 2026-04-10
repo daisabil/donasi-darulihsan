@@ -47,7 +47,7 @@ function ActionMenu({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => 
     if (!open && btnRef.current) {
       const rect = btnRef.current.getBoundingClientRect();
       const spaceBelow = window.innerHeight - rect.bottom;
-      setUpward(spaceBelow < 150);
+      setUpward(spaceBelow < 250); // Increased threshold to 250px for safety
     }
     setOpen(!open);
   };
@@ -375,7 +375,7 @@ function CombinedChart({ gDonations, fDonations }: { gDonations: any[]; fDonatio
         </div>
 
         {/* SVG CHART */}
-        <div style={{ width: '100%', overflowX: 'auto' }}>
+        <div style={{ width: '100%', overflowX: 'auto', paddingBottom: '120px', marginBottom: '-120px' }}>
           <svg
             viewBox={`0 0 ${W} ${H}`}
             style={{ width: '100%', minWidth: '480px', height: '300px', display: 'block' }}
@@ -802,7 +802,7 @@ function MigrasiSection({ passcode, gDonations, fDonations, migrations, onRefres
 
       <div className="admin-panel">
         <div className="admin-panel-header"><h3>Riwayat Migrasi Dana</h3></div>
-        <div style={{ overflowX: 'auto' }}>
+        <div style={{ overflowX: 'auto', paddingBottom: '120px', marginBottom: '-120px' }}>
           <table className="admin-table">
             <thead><tr><th>Tanggal</th><th>Dari</th><th>Ke</th><th style={{ textAlign: 'right' }}>Jumlah</th><th>Catatan</th><th style={{ textAlign: 'center' }}>EDIT</th></tr></thead>
             <tbody>
@@ -942,7 +942,7 @@ function RiwayatSection({ passcode, gDonations, fDonations, fixedDonors, onRefre
               })}
             </select>
           </div>
-          <div style={{ overflowX: 'auto' }}>
+          <div style={{ overflowX: 'auto', paddingBottom: '120px', marginBottom: '-120px' }}>
             <table className="admin-table">
               <thead><tr><th>Nama Donatur</th><th>Kategori</th><th>Metode</th><th>Tanggal</th><th style={{ textAlign: 'right' }}>Jumlah</th><th>Catatan</th><th style={{ textAlign: 'center' }}>EDIT</th></tr></thead>
               <tbody>
@@ -965,7 +965,7 @@ function RiwayatSection({ passcode, gDonations, fDonations, fixedDonors, onRefre
           </div>
         </>
       ) : (
-        <div style={{ overflowX: 'auto' }}>
+        <div style={{ overflowX: 'auto', paddingBottom: '120px', marginBottom: '-120px' }}>
           <table className="admin-table">
             <thead>
               <tr>
