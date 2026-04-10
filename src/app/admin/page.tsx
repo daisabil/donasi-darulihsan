@@ -1,5 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import ModeSwitch from "@/components/ModeSwitch";
+
 
 type NavMenu = 'overview' | 'input-umum' | 'input-tetap' | 'migrasi' | 'riwayat';
 type ShowMode = 'both' | 'income' | 'visitor';
@@ -785,6 +787,7 @@ export default function AdminPage() {
   if (!isAuth) {
     return (
       <div className="admin-login">
+        <ModeSwitch isPublic={false} style={{ position: 'absolute', top: '15px', right: '20px' }} />
         <div className="login-box">
           <div className="login-icon">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00AEEF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -918,7 +921,11 @@ export default function AdminPage() {
           {menu === 'migrasi' && <MigrasiSection passcode={passcode} gDonations={gDonations} fDonations={fDonations} migrations={migrations} onRefresh={fetchAll} />}
           {menu === 'riwayat' && <RiwayatSection passcode={passcode} gDonations={gDonations} fDonations={fDonations} onRefresh={fetchAll} />}
         </div>
+        
+        {/* Switch melayang di pojok kanan bawah setelah login */}
+        <ModeSwitch isPublic={false} className="floating-admin" />
       </main>
     </div>
   );
 }
+
