@@ -72,7 +72,7 @@ function EditModal({ isOpen, onClose, data, passcode, onRefresh }: { isOpen: boo
     if (data) {
       setForm({
         ...data,
-        date: new Date(data.date).toISOString().slice(0, 16)
+        date: data.date ? new Date(data.date).toISOString().slice(0, 16) : ''
       });
     }
   }, [data]);
