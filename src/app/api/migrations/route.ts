@@ -61,3 +61,33 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: 'Failed to delete' }, { status: 500 });
   }
 }
+export async function PATCH(request: Request) {
+  try {
+    const body = await request.json();
+    const { passcode, id, fromMethod, toMethod, amount, date, notes } = body;
+
+    if (passcode !== '124159') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    if (fromMethod === toMethod) {
+      return NextResponse.json({ error: 'Metode asal dan tujuan tidak boleh sama.' }, { status: 400 });
+    }
+
+    const updated = await prisma.moneyMigration.update({
+      where: { id },
+      data: {
+        fromMethod,
+        toMethod,
+        amount: Number(amount),
+        date: new Date(date),
+        notes: notes || null,
+      },
+    });
+
+    return NextResponse.json(updated);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: 'Failed to update' }, { status: 500 });
+  }
+}

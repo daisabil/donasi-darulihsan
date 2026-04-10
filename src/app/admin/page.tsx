@@ -38,6 +38,137 @@ function PaymentBadge({ method }: { method: string }) {
   return <span className={`badge ${cls}`}>{method}</span>;
 }
 
+function ActionMenu({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => void }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="action-menu-container">
+      <button className="btn-dots" onClick={() => setOpen(!open)} type="button">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+      </button>
+      {open && (
+        <>
+          <div className="action-menu-overlay" onClick={() => setOpen(false)} />
+          <div className="action-menu-dropdown">
+            <button onClick={() => { onEdit(); setOpen(false); }} type="button">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Edit Data
+            </button>
+            <button onClick={() => { onDelete(); setOpen(false); }} className="delete" type="button">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+              Hapus
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function EditModal({ isOpen, onClose, data, passcode, onRefresh }: { isOpen: boolean; onClose: () => void; data: any; passcode: string; onRefresh: () => void }) {
+  const [form, setForm] = useState<any>({});
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (data) {
+      setForm({
+        ...data,
+        date: new Date(data.date).toISOString().slice(0, 16)
+      });
+    }
+  }, [data]);
+
+  if (!isOpen || !data) return null;
+
+  const isUmum = data.cat === 'Umum';
+  const isTetap = data.cat === 'Tetap';
+  const isMigrasi = !!data.fromMethod;
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    let ep = '';
+    if (isUmum) ep = '/api/general-donations';
+    else if (isTetap) ep = '/api/fixed-donations';
+    else if (isMigrasi) ep = '/api/migrations';
+
+    const res = await fetch(ep, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ passcode, ...form })
+    });
+    setLoading(false);
+    if (res.ok) {
+      onRefresh();
+      onClose();
+    } else {
+      const j = await res.json().catch(() => ({}));
+      alert(j.error || 'Gagal menyimpan perubahan.');
+    }
+  };
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h3>Edit Data {isMigrasi ? 'Migrasi' : `Donasi ${data.cat}`}</h3>
+          <button className="close-btn" onClick={onClose}>✕</button>
+        </div>
+        <form onSubmit={handleSave} className="admin-form" style={{ padding: '0' }}>
+          <div className="form-grid">
+            {isUmum && (
+              <div className="full-width">
+                <label>Nama Donatur</label>
+                <input type="text" value={form.name || ''} onChange={e => setForm({ ...form, name: e.target.value })} required />
+              </div>
+            )}
+            <div>
+              <label>Tanggal & Waktu</label>
+              <input type="datetime-local" value={form.date || ''} onChange={e => setForm({ ...form, date: e.target.value })} required />
+            </div>
+            {isMigrasi ? (
+              <>
+                <div>
+                  <label>Dari Metode</label>
+                  <select value={form.fromMethod} onChange={e => setForm({ ...form, fromMethod: e.target.value })}>
+                    {PAYMENT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label>Ke Metode</label>
+                  <select value={form.toMethod} onChange={e => setForm({ ...form, toMethod: e.target.value })}>
+                    {PAYMENT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
+                  </select>
+                </div>
+              </>
+            ) : (
+              <div>
+                <label>Metode Pembayaran</label>
+                <select value={form.paymentMethod || ''} onChange={e => setForm({ ...form, paymentMethod: e.target.value })}>
+                  {PAYMENT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
+                </select>
+              </div>
+            )}
+            <div>
+              <label>Jumlah (Rp)</label>
+              <input type="number" value={form.amount || ''} onChange={e => setForm({ ...form, amount: e.target.value })} required min="1000" />
+            </div>
+            <div className="full-width">
+              <label>Catatan</label>
+              <input type="text" value={form.notes || ''} onChange={e => setForm({ ...form, notes: e.target.value })} />
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '10px', marginTop: '24px' }}>
+            <button type="button" className="btn-submit" onClick={onClose} style={{ flex: 1, background: '#f3f4f6', color: '#374151' }}>Batal</button>
+            <button type="submit" className="btn-submit" disabled={loading} style={{ flex: 2 }}>
+              {loading ? 'Menyimpan...' : 'Simpan Perubahan'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 function calcBalances(gDonations: any[], fDonations: any[], migrations: any[]) {
   let cash = 0, bank = 0, dana = 0;
   [...gDonations, ...fDonations].forEach(d => {
@@ -551,8 +682,8 @@ function InputTetapSection({ passcode, fixedDonors, onSuccess, onRefreshDonors }
 }
 
 // ── MIGRASI SECTION ───────────────────────────────────────────────────
-function MigrasiSection({ passcode, gDonations, fDonations, migrations, onRefresh }: {
-  passcode: string; gDonations: any[]; fDonations: any[]; migrations: any[]; onRefresh: () => void;
+function MigrasiSection({ passcode, gDonations, fDonations, migrations, onRefresh, onEdit }: {
+  passcode: string; gDonations: any[]; fDonations: any[]; migrations: any[]; onRefresh: () => void; onEdit: (item: any) => void;
 }) {
   const { cash, bank, dana } = calcBalances(gDonations, fDonations, migrations);
   const [form, setForm] = useState({ date: getLocalDatetime(), fromMethod: 'Cash', toMethod: 'Transfer Bank', amount: '', notes: '' });
@@ -638,7 +769,7 @@ function MigrasiSection({ passcode, gDonations, fDonations, migrations, onRefres
         <div className="admin-panel-header"><h3>Riwayat Migrasi Dana</h3></div>
         <div style={{ overflowX: 'auto' }}>
           <table className="admin-table">
-            <thead><tr><th>Tanggal</th><th>Dari</th><th>Ke</th><th style={{ textAlign: 'right' }}>Jumlah</th><th>Catatan</th><th style={{ textAlign: 'center' }}>Hapus</th></tr></thead>
+            <thead><tr><th>Tanggal</th><th>Dari</th><th>Ke</th><th style={{ textAlign: 'right' }}>Jumlah</th><th>Catatan</th><th style={{ textAlign: 'center' }}>EDIT</th></tr></thead>
             <tbody>
               {migrations.length === 0 && <tr><td colSpan={6} style={{ textAlign: 'center', color: '#9ca3af', padding: '32px' }}>Belum ada riwayat migrasi.</td></tr>}
               {migrations.map(m => (
@@ -648,7 +779,9 @@ function MigrasiSection({ passcode, gDonations, fDonations, migrations, onRefres
                   <td><PaymentBadge method={m.toMethod} /></td>
                   <td style={{ textAlign: 'right', fontWeight: 700, color: '#374151', whiteSpace: 'nowrap' }}>{formatRp(m.amount)}</td>
                   <td style={{ color: '#6b7280', fontSize: '12px' }}>{m.notes || '-'}</td>
-                  <td style={{ textAlign: 'center' }}><button className="btn-danger" onClick={() => handleDelete(m.id)}>Hapus</button></td>
+                  <td style={{ textAlign: 'center' }}>
+                    <ActionMenu onEdit={() => onEdit(m)} onDelete={() => handleDelete(m.id)} />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -660,8 +793,8 @@ function MigrasiSection({ passcode, gDonations, fDonations, migrations, onRefres
 }
 
 // ── RIWAYAT SECTION ───────────────────────────────────────────────────
-function RiwayatSection({ passcode, gDonations, fDonations, onRefresh }: {
-  passcode: string; gDonations: any[]; fDonations: any[]; onRefresh: () => void;
+function RiwayatSection({ passcode, gDonations, fDonations, onRefresh, onEdit }: {
+  passcode: string; gDonations: any[]; fDonations: any[]; onRefresh: () => void; onEdit: (item: any) => void;
 }) {
   const [filter, setFilter] = useState<'all' | 'umum' | 'tetap'>('all');
   const [filterMethod, setFilterMethod] = useState('semua');
@@ -732,7 +865,7 @@ function RiwayatSection({ passcode, gDonations, fDonations, onRefresh }: {
       </div>
       <div style={{ overflowX: 'auto' }}>
         <table className="admin-table">
-          <thead><tr><th>Nama Donatur</th><th>Kategori</th><th>Metode</th><th>Tanggal</th><th style={{ textAlign: 'right' }}>Jumlah</th><th>Catatan</th><th style={{ textAlign: 'center' }}>Aksi</th></tr></thead>
+          <thead><tr><th>Nama Donatur</th><th>Kategori</th><th>Metode</th><th>Tanggal</th><th style={{ textAlign: 'right' }}>Jumlah</th><th>Catatan</th><th style={{ textAlign: 'center' }}>EDIT</th></tr></thead>
           <tbody>
             {filtered.length === 0 && <tr><td colSpan={7} style={{ textAlign: 'center', color: '#9ca3af', padding: '32px' }}>Tidak ada data yang ditemukan.</td></tr>}
             {filtered.map(d => (
@@ -743,7 +876,9 @@ function RiwayatSection({ passcode, gDonations, fDonations, onRefresh }: {
                 <td style={{ fontSize: '12px', whiteSpace: 'nowrap', color: '#6b7280' }}>{formatTgl(d.date)}</td>
                 <td style={{ textAlign: 'right', fontWeight: 700, color: 'var(--primary)', whiteSpace: 'nowrap' }}>{formatRp(d.amount)}</td>
                 <td style={{ fontSize: '12px', color: '#6b7280' }}>{d.notes || '-'}</td>
-                <td style={{ textAlign: 'center' }}><button className="btn-danger" onClick={() => handleDelete(d.id, d.cat)}>Hapus</button></td>
+                <td style={{ textAlign: 'center' }}>
+                  <ActionMenu onEdit={() => onEdit(d)} onDelete={() => handleDelete(d.id, d.cat)} />
+                </td>
               </tr>
             ))}
           </tbody>
@@ -766,6 +901,8 @@ export default function AdminPage() {
   const [fixedDonors, setFixedDonors] = useState<any[]>([]);
   const [migrations, setMigrations] = useState<any[]>([]);
   const [visitorTotal, setVisitorTotal] = useState(0);
+  const [editItem, setEditItem] = useState<any>(null);
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   const fetchAll = useCallback(() => {
     fetch('/api/general-donations').then(r => r.json()).then(d => setGDonations(Array.isArray(d) ? d : []));
@@ -919,9 +1056,17 @@ export default function AdminPage() {
           {menu === 'overview' && <OverviewSection gDonations={gDonations} fDonations={fDonations} migrations={migrations} visitorTotal={visitorTotal} />}
           {menu === 'input-umum' && <InputUmumSection passcode={passcode} onSuccess={fetchAll} />}
           {menu === 'input-tetap' && <InputTetapSection passcode={passcode} fixedDonors={fixedDonors} onSuccess={fetchAll} onRefreshDonors={fetchAll} />}
-          {menu === 'migrasi' && <MigrasiSection passcode={passcode} gDonations={gDonations} fDonations={fDonations} migrations={migrations} onRefresh={fetchAll} />}
-          {menu === 'riwayat' && <RiwayatSection passcode={passcode} gDonations={gDonations} fDonations={fDonations} onRefresh={fetchAll} />}
+          {menu === 'migrasi' && <MigrasiSection passcode={passcode} gDonations={gDonations} fDonations={fDonations} migrations={migrations} onRefresh={fetchAll} onEdit={(it) => { setEditItem(it); setIsEditOpen(true); }} />}
+          {menu === 'riwayat' && <RiwayatSection passcode={passcode} gDonations={gDonations} fDonations={fDonations} onRefresh={fetchAll} onEdit={(it) => { setEditItem(it); setIsEditOpen(true); }} />}
         </div>
+
+        <EditModal 
+          isOpen={isEditOpen} 
+          onClose={() => setIsEditOpen(false)} 
+          data={editItem} 
+          passcode={passcode} 
+          onRefresh={fetchAll} 
+        />
       </main>
     </div>
   );
