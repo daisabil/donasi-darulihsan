@@ -248,13 +248,13 @@ export default function Home() {
     <div className="card" style={{ marginTop: '40px' }}>
       {/* SHOWCASE IMAGE */}
       <div style={{ marginBottom: '25px', borderRadius: '16px', overflow: 'hidden', boxShadow: 'var(--card-shadow)', border: '1px solid var(--border)', background: '#f3f4f6' }}>
-        <img 
-          src="/api/settings/image" 
-          alt="Kondisi Lapangan" 
-          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-          style={{ width: '100%', aspectRatio: '1 / 1', objectFit: 'cover', display: 'block' }} 
-        />
-      </div>
+          <img 
+            src="/api/settings/image" 
+            alt="Kondisi Lapangan" 
+            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+            style={{ width: '100%', aspectRatio: '3 / 2', objectFit: 'cover', display: 'block' }} 
+          />
+        </div>
 
       <div className="header">
         <h1>Pembangunan Halaman Masjid Darul Ihsan</h1>
