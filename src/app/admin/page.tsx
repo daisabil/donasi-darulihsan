@@ -1377,7 +1377,11 @@ export default function AdminPage() {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             Keluar
           </button>
-          <div style={{ textAlign: 'center', marginTop: '15px', fontSize: '10px', opacity: 0.3, letterSpacing: '1px', textTransform: 'uppercase', color: 'white' }}>daisabil</div>
+          <div style={{ textAlign: 'center', marginTop: '16px' }}>
+            <a href="https://daisabil.com" target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', opacity: 0.25, letterSpacing: '1px', textDecoration: 'none', color: 'white' }}>
+              © @daisabil
+            </a>
+          </div>
         </div>
       </aside>
 
@@ -1402,7 +1406,11 @@ export default function AdminPage() {
               <button className="sidebar-logout" onClick={() => { setIsAuth(false); setInputPass(''); setPasscode(''); setMobileOpen(false); }}>
                 Keluar
               </button>
-              <div style={{ textAlign: 'center', marginTop: '12px', fontSize: '10px', opacity: 0.3, letterSpacing: '2px', textTransform: 'uppercase' }}>daisabil</div>
+              <div style={{ textAlign: 'center', marginTop: '12px' }}>
+                <a href="https://daisabil.com" target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', opacity: 0.3, letterSpacing: '1.5px', textDecoration: 'none', color: 'inherit' }}>
+                  © @daisabil
+                </a>
+              </div>
             </div>
           </nav>
         </div>
