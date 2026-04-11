@@ -903,7 +903,7 @@ function SettingsSection({ passcode }: { passcode: string }) {
   useEffect(() => {
     fetch('/api/settings').then(r => r.json()).then(d => {
       if (d.exists) {
-        setPreviewUrl(`/field-condition.jpg?v=${Date.now()}`);
+        setPreviewUrl(`/api/settings/image?v=${Date.now()}`);
       }
     });
   }, []);
@@ -925,7 +925,7 @@ function SettingsSection({ passcode }: { passcode: string }) {
       const data = await res.json();
       if (res.ok) {
         setMsg({ type: 'ok', text: 'Foto berhasil diperbarui!' });
-        setPreviewUrl(`/field-condition.jpg?v=${Date.now()}`);
+        setPreviewUrl(`/api/settings/image?v=${Date.now()}`);
         setFile(null);
       } else {
         setMsg({ type: 'err', text: data.error || 'Gagal mengunggah.' });
@@ -1360,11 +1360,11 @@ export default function AdminPage() {
 
   const navItems: { id: NavMenu; label: string }[] = [
     { id: 'overview', label: 'Overview' },
-    { id: 'pengaturan', label: 'Pengaturan Situs' },
     { id: 'input-umum', label: 'Input Donasi Umum' },
     { id: 'input-tetap', label: 'Input Donatur Tetap' },
     { id: 'migrasi', label: 'Migrasi Dana' },
     { id: 'riwayat', label: 'Riwayat & Edit' },
+    { id: 'pengaturan', label: 'Pengaturan' },
   ];
 
   const pageTitle: Record<NavMenu, string> = {
@@ -1403,7 +1403,7 @@ export default function AdminPage() {
       {/* SIDEBAR — desktop only */}
       <aside className="admin-sidebar">
         <div className="sidebar-logo">
-          <h2>Darul Ihsan v2</h2>
+          <h2>Darul Ihsan</h2>
           <p>Panel Admin Donasi</p>
         </div>
         <nav className="sidebar-nav">

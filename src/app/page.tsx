@@ -249,7 +249,7 @@ export default function Home() {
       {/* SHOWCASE IMAGE */}
       <div style={{ marginBottom: '25px', borderRadius: '16px', overflow: 'hidden', boxShadow: 'var(--card-shadow)', border: '1px solid var(--border)', background: '#f3f4f6' }}>
         <img 
-          src={`/field-condition.jpg?v=${Date.now()}`} 
+          src="/api/settings/image" 
           alt="Kondisi Lapangan" 
           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
           style={{ width: '100%', aspectRatio: '1 / 1', objectFit: 'cover', display: 'block' }} 
