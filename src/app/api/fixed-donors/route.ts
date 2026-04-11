@@ -20,7 +20,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { passcode, name, date, whatsapp } = body;
+    const { passcode, name, date } = body;
     
     if (passcode !== '124159') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -29,7 +29,6 @@ export async function POST(request: Request) {
     const newDonor = await prisma.fixedDonor.create({
       data: {
         name,
-        whatsapp,
         startDate: new Date(date),
       },
     });
@@ -65,7 +64,7 @@ export async function DELETE(request: Request) {
 export async function PATCH(request: Request) {
   try {
     const body = await request.json();
-    const { passcode, id, name, whatsapp } = body;
+    const { passcode, id, name } = body;
     
     if (passcode !== '124159') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -75,7 +74,6 @@ export async function PATCH(request: Request) {
       where: { id },
       data: {
         name,
-        whatsapp,
       },
     });
 

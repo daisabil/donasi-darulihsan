@@ -21,7 +21,6 @@ model GeneralDonation {
 model FixedDonor {
   id            String   @id @default(cuid())
   name          String   @unique
-  whatsapp      String?
   startDate     DateTime @default(now())
   createdAt     DateTime @default(now())
   
