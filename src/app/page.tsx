@@ -6,8 +6,6 @@ const ShareMenu = () => {
   const [copied, setCopied] = useState(false);
 
   const shareData = {
-    title: 'Donasi Pembangunan Halaman Masjid Darul Ihsan',
-    text: '',
     url: 'https://donasi-darulihsan.daisabil.com/',
   };
 

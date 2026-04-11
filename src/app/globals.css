@@ -1127,7 +1127,7 @@ body:has(.admin-root) {
    ========================================================= */
 .floating-share-wrapper {
   position: fixed;
-  bottom: 90px;
+  bottom: 140px;
   right: 40px;
   z-index: 1000;
   display: flex;
@@ -1213,7 +1213,7 @@ body:has(.admin-root) {
 
 @media (max-width: 600px) {
   .floating-share-wrapper {
-    bottom: 75px;
+    bottom: 110px;
     right: 30px;
   }
 }
