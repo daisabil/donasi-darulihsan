@@ -354,6 +354,7 @@ export default function Home() {
       <div style={{ marginTop: '30px', borderTop: '1px solid #eee', paddingTop: '20px', textAlign: 'center', fontSize: '13px', color: '#666', lineHeight: '1.6' }}>
         <p style={{ color: 'var(--primary)', fontWeight: 'bold', margin: '0 0 5px 0' }}>Transparansi adalah prioritas kami.</p>
         <p style={{ margin: '0' }}>Laporan ini diperbarui secara berkala oleh bendahara panitia, Terima kasih atas kepercayaan dan dukungan Anda 🙏.</p>
+        <p style={{ margin: '15px 0 0', fontSize: '11px', opacity: 0.5, letterSpacing: '1px', textTransform: 'uppercase' }}>daisabil</p>
       </div>
     </div>
   );
