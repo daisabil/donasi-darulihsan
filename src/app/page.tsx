@@ -108,11 +108,11 @@ export default function Home() {
       <div className="card" style={{ marginTop: '40px', maxWidth: '800px' }}>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '30px' }}>
           <button onClick={() => setView('home')} style={{ background: 'transparent', color: 'var(--primary)', border: '2px solid var(--primary)', borderRadius: '30px', padding: '10px 24px', fontSize: '15px', fontWeight: 'bold', cursor: 'pointer', maxWidth: '300px', width: '100%' }}>
-            Kembali ke Halaman Utama
+            Kembali
           </button>
         </div>
 
-        <h2 style={{ textAlign: 'left', marginBottom: '5px' }}>Semua Data Donatur</h2>
+        <h2 style={{ textAlign: 'left', marginBottom: '5px' }}>Data Donatur</h2>
         <p style={{ textAlign: 'left', color: '#777', fontSize: '14px', marginTop: 0, marginBottom: '25px' }}>Menampilkan seluruh riwayat donasi secara lengkap dan transparan.</p>
 
         <div style={{ display: 'flex', gap: '15px', marginBottom: '25px', flexWrap: 'wrap' }}>
@@ -156,7 +156,7 @@ export default function Home() {
                   <tr key={d.id || i}>
                     <td style={{ textAlign: 'left' }}>
                       <span className="nama-donatur">{d.name}</span>
-                      <span className="tgl-donasi">{formatTgl(d.date)} - Via {d.paymentMethod} {d.notes ? `(${d.notes})` : ''}</span>
+                      <span className="tgl-donasi">{formatTgl(d.date)} - {d.paymentMethod} {d.notes ? `(${d.notes})` : ''}</span>
                     </td>
                     <td className="nominal">{formatRp(d.amount)}</td>
                   </tr>
@@ -179,11 +179,11 @@ export default function Home() {
       <div className="card" style={{ marginTop: '40px', maxWidth: '800px' }}>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '30px' }}>
           <button onClick={() => setView('home')} style={{ background: 'transparent', color: 'var(--primary)', border: '2px solid var(--primary)', borderRadius: '30px', padding: '10px 24px', fontSize: '15px', fontWeight: 'bold', cursor: 'pointer', maxWidth: '300px', width: '100%' }}>
-            Kembali ke Halaman Utama
+            Kembali
           </button>
         </div>
 
-        <h2 style={{ textAlign: 'left', marginBottom: '5px' }}>Semua Data Donatur Tetap</h2>
+        <h2 style={{ textAlign: 'left', marginBottom: '5px' }}>Data Donatur Tetap</h2>
         <p style={{ textAlign: 'left', color: '#777', fontSize: '14px', marginTop: 0, marginBottom: '25px' }}>Menampilkan seluruh riwayat donasi secara lengkap dan transparan.</p>
 
         <div style={{ display: 'flex', gap: '15px', marginBottom: '25px', flexWrap: 'wrap' }}>
@@ -195,9 +195,6 @@ export default function Home() {
             <p style={{ margin: '0 0 5px 0', fontSize: '12px', color: '#777' }}>Total Terkumpul</p>
             <p style={{ margin: 0, fontSize: '20px', fontWeight: 'bold', color: 'var(--primary)' }}>{formatRp(filtered.reduce((s, d) => s + d.amount, 0))}</p>
           </div>
-          <div style={{ flex: 1, minWidth: '130px', background: '#f4fafc', padding: '15px', borderRadius: '8px', textAlign: 'center' }}>
-            <p style={{ margin: '0 0 5px 0', fontSize: '12px', color: '#777' }}>Kontribusi Terbesar</p>
-            <p style={{ margin: 0, fontSize: '20px', fontWeight: 'bold', color: 'var(--primary)' }}>{formatRp(filtered.length > 0 ? Math.max(...filtered.map(d => d.amount)) : 0)}</p>
           </div>
         </div>
 
@@ -218,8 +215,8 @@ export default function Home() {
             <table>
               <thead>
                 <tr>
-                  <th style={{ textAlign: 'left' }}>Nama Donatur Tetap</th>
-                  <th style={{ textAlign: 'right' }}>Total Semua Kontribusi</th>
+                  <th style={{ textAlign: 'left' }}>Nama Donatur</th>
+                  <th style={{ textAlign: 'right' }}>Total Kontribusi</th>
                 </tr>
               </thead>
               <tbody>
