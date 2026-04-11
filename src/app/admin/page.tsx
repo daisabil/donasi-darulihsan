@@ -7,7 +7,7 @@ type NavMenu = 'overview' | 'input-umum' | 'input-tetap' | 'migrasi' | 'riwayat'
 type ShowMode = 'both' | 'income' | 'visitor';
 type PeriodMode = 'monthly' | 'weekly' | 'daily' | 'hourly';
 
-const PAYMENT_METHODS = ['Cash', 'Transfer Bank', 'E-Wallet DANA'];
+const PAYMENT_METHODS = ['Cash', 'Transfer Bank'];
 const pad = (n: number) => String(n).padStart(2, '0');
 
 function formatRp(n: number) {
@@ -35,7 +35,7 @@ function getLocalDatetime() {
 }
 
 function PaymentBadge({ method }: { method: string }) {
-  const cls = method === 'Cash' ? 'badge-cash' : method === 'Transfer Bank' ? 'badge-bank' : 'badge-dana';
+  const cls = method === 'Cash' ? 'badge-cash' : 'badge-bank';
   return <span className={`badge ${cls}`}>{method}</span>;
 }
 
@@ -220,22 +220,20 @@ function EditModal({ isOpen, onClose, data, passcode, onRefresh }: { isOpen: boo
 }
 
 function calcBalances(gDonations: any[], fDonations: any[], migrations: any[]) {
-  let cash = 0, bank = 0, dana = 0;
+  let cash = 0, bank = 0;
   [...gDonations, ...fDonations].forEach(d => {
     if (d.paymentMethod === 'Cash') cash += d.amount;
     else if (d.paymentMethod === 'Transfer Bank') bank += d.amount;
-    else if (d.paymentMethod === 'E-Wallet DANA') dana += d.amount;
   });
   migrations.forEach(m => {
     const apply = (method: string, sign: number) => {
       if (method === 'Cash') cash += sign * m.amount;
       else if (method === 'Transfer Bank') bank += sign * m.amount;
-      else if (method === 'E-Wallet DANA') dana += sign * m.amount;
     };
     apply(m.fromMethod, -1);
     apply(m.toMethod, 1);
   });
-  return { cash, bank, dana, total: cash + bank + dana };
+  return { cash, bank, total: cash + bank };
 }
 
 function getWeekNumber(d: Date): number {
@@ -535,11 +533,6 @@ function OverviewSection({ gDonations, fDonations, migrations, visitorTotal }: {
           <div className="label">Saldo Bank</div>
           <div className="value">{formatRp(bank)}</div>
           <div className="sublabel">Transfer rekening</div>
-        </div>
-        <div className="stat-card dana">
-          <div className="label">Saldo DANA</div>
-          <div className="value">{formatRp(dana)}</div>
-          <div className="sublabel">E-Wallet DANA</div>
         </div>
         <div className="stat-card total">
           <div className="label">Total Dana</div>
@@ -957,9 +950,9 @@ function SettingsSection({ passcode }: { passcode: string }) {
                 <img 
                   src={previewUrl} 
                   alt="Preview" 
-                  style={{ width: '100%', maxWidth: '400px', aspectRatio: '3 / 2', objectFit: 'cover', borderRadius: '12px', border: '4px solid white', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }} 
+                  style={{ width: '100%', maxWidth: '400px', aspectRatio: '1 / 1', objectFit: 'cover', borderRadius: '12px', border: '4px solid white', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }} 
                 />
-                <p style={{ fontSize: '11px', color: '#9ca3af', marginTop: '10px' }}>Foto saat ini (Rasio 3:2 Landscape)</p>
+                <p style={{ fontSize: '11px', color: '#9ca3af', marginTop: '10px' }}>Foto saat ini (Rasio 1:1 Square)</p>
               </div>
             ) : (
               <div style={{ padding: '40px 0', color: '#9ca3af' }}>
@@ -993,7 +986,7 @@ function SettingsSection({ passcode }: { passcode: string }) {
             </form>
           </div>
           <p style={{ fontSize: '12px', lineHeight: '1.6', background: '#fefce8', padding: '12px', borderRadius: '8px', border: '1px solid #fef08a', color: '#854d0e' }}>
-            <strong>Catatan:</strong> Foto ini akan muncul di bagian paling atas halaman utama dan menjadi gambar pratinjau saat link website dibagikan ke WhatsApp. Gunakan foto **landscape (3:2)** untuk hasil terbaik.
+            <strong>Catatan:</strong> Foto ini akan muncul di bagian paling atas halaman utama dan menjadi gambar pratinjau saat link website dibagikan ke WhatsApp. Gunakan foto **kotak (1:1)** untuk hasil terbaik.
           </p>
         </div>
       </div>
@@ -1037,8 +1030,8 @@ function MigrasiSection({ passcode, gDonations, fDonations, migrations, onRefres
 
   return (
     <div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '16px', marginBottom: '24px' }}>
-        {[{ m: 'Cash', s: cash }, { m: 'Transfer Bank', s: bank }, { m: 'E-Wallet DANA', s: dana }].map(({ m, s }) => (
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: '16px', marginBottom: '24px' }}>
+        {[{ m: 'Cash', s: cash }, { m: 'Transfer Bank', s: bank }].map(({ m, s }) => (
           <div key={m} className="admin-panel" style={{ marginBottom: 0, borderTop: `3px solid ${methodColor(m)}` }}>
             <div className="admin-panel-body" style={{ padding: '16px 20px' }}>
               <div style={{ fontSize: '11px', color: '#6b7280', fontWeight: 700, textTransform: 'uppercase', marginBottom: '6px' }}>Saldo {m}</div>

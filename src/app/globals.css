@@ -20,8 +20,6 @@
   --cash-bg: #fffbeb;
   --bank-color: #00AEEF;
   --bank-bg: #e8f7fd;
-  --dana-color: #6366f1;
-  --dana-bg: #eef2ff;
   --success: #10b981;
   --danger: #ef4444;
 }
@@ -326,8 +324,6 @@ body:has(.admin-root) {
 .stat-card.cash .value { color: var(--cash-color); }
 .stat-card.bank { border-top: 3px solid var(--bank-color); }
 .stat-card.bank .value { color: var(--bank-color); }
-.stat-card.dana { border-top: 3px solid var(--dana-color); }
-.stat-card.dana .value { color: var(--dana-color); }
 .stat-card.total { border-top: 3px solid var(--success); }
 .stat-card.total .value { color: var(--success); }
 
@@ -479,7 +475,6 @@ body:has(.admin-root) {
 }
 .badge-cash { background: #fffbeb; color: var(--cash-color); }
 .badge-bank { background: var(--bank-bg); color: var(--bank-color); }
-.badge-dana { background: var(--dana-bg); color: var(--dana-color); }
 .badge-umum { background: #f0fdf4; color: #16a34a; }
 .badge-tetap { background: #fdf4ff; color: #9333ea; }
 
