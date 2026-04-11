@@ -64,7 +64,7 @@ body {
 .amount-target { font-size: 14px; color: var(--text-muted); margin-top: 5px; }
 
 .progress-container { width: 100%; background-color: #e5e7eb; border-radius: 50px; height: 12px; margin-bottom: 10px; overflow: hidden; }
-.progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-dark)); border-radius: 50px; width: 0%; transition: width 1.5s ease-out; }
+.progress-bar { height: 100%; background: var(--primary); border-radius: 50px; width: 0%; transition: width 1.5s ease-out; }
 .percentage-text { font-size: 14px; font-weight: 700; text-align: right; display: block; color: var(--text-main); margin-bottom: 30px; }
 
 .tabs { display: flex; background: #f3f4f6; border-radius: 10px; padding: 4px; margin-bottom: 20px; }
@@ -656,7 +656,7 @@ body:has(.admin-root) {
 
 .prog-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+  background: var(--primary);
   border-radius: 50px;
   transition: width 1s ease;
 }
