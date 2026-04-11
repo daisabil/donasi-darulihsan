@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
 
-type NavMenu = 'overview' | 'input-umum' | 'input-tetap' | 'migrasi' | 'riwayat';
+type NavMenu = 'overview' | 'input-umum' | 'input-tetap' | 'migrasi' | 'riwayat' | 'pengaturan';
 type ShowMode = 'both' | 'income' | 'visitor';
 type PeriodMode = 'monthly' | 'weekly' | 'daily' | 'hourly';
 
@@ -638,6 +638,165 @@ function InputUmumSection({ passcode, onSuccess }: { passcode: string; onSuccess
   );
 }
 
+// ── DONOR SEARCH SELECT ───────────────────────────────────────────────
+function DonorSearchSelect({ donors, value, onChange }: {
+  donors: any[]; value: string; onChange: (id: string) => void;
+}) {
+  const [query, setQuery] = useState('');
+  const [open, setOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const [highlightIdx, setHighlightIdx] = useState(-1);
+
+  // Sync display text when value changes externally (e.g. form reset)
+  const selectedDonor = donors.find(d => d.id === value);
+  useEffect(() => {
+    if (!value) setQuery('');
+    else if (selectedDonor) setQuery(selectedDonor.name);
+  }, [value, selectedDonor]);
+
+  // Close on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        setOpen(false);
+        // Reset query to selected donor name if user didn't pick
+        if (selectedDonor) setQuery(selectedDonor.name);
+        else setQuery('');
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [selectedDonor]);
+
+  const filtered = useMemo(() => {
+    if (!query.trim()) return donors;
+    const q = query.toLowerCase();
+    return donors.filter(d => d.name.toLowerCase().includes(q));
+  }, [donors, query]);
+
+  // Reset highlight when filtered list changes
+  useEffect(() => { setHighlightIdx(-1); }, [filtered]);
+
+  // Scroll highlighted item into view
+  useEffect(() => {
+    if (highlightIdx >= 0 && listRef.current) {
+      const items = listRef.current.children;
+      if (items[highlightIdx]) {
+        (items[highlightIdx] as HTMLElement).scrollIntoView({ block: 'nearest' });
+      }
+    }
+  }, [highlightIdx]);
+
+  const handleSelect = (donor: any) => {
+    onChange(donor.id);
+    setQuery(donor.name);
+    setOpen(false);
+    setHighlightIdx(-1);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!open) {
+      if (e.key === 'ArrowDown' || e.key === 'Enter') {
+        setOpen(true);
+        e.preventDefault();
+      }
+      return;
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setHighlightIdx(prev => Math.min(prev + 1, filtered.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setHighlightIdx(prev => Math.max(prev - 1, 0));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (highlightIdx >= 0 && filtered[highlightIdx]) {
+        handleSelect(filtered[highlightIdx]);
+      }
+    } else if (e.key === 'Escape') {
+      setOpen(false);
+      if (selectedDonor) setQuery(selectedDonor.name);
+      else setQuery('');
+    }
+  };
+
+  return (
+    <div ref={wrapperRef} className="donor-search-wrapper">
+      <div className="donor-search-input-wrap">
+        <svg className="donor-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input
+          ref={inputRef}
+          type="text"
+          placeholder="Ketik nama donatur untuk mencari..."
+          value={query}
+          onChange={e => {
+            setQuery(e.target.value);
+            onChange(''); // Clear selection when typing
+            setOpen(true);
+          }}
+          onFocus={() => setOpen(true)}
+          onKeyDown={handleKeyDown}
+          autoComplete="off"
+          className="donor-search-input"
+        />
+        {value && (
+          <button
+            type="button"
+            className="donor-search-clear"
+            onClick={() => { setQuery(''); onChange(''); inputRef.current?.focus(); }}
+            tabIndex={-1}
+          >✕</button>
+        )}
+      </div>
+      {open && (
+        <div className="donor-search-dropdown" ref={listRef}>
+          {filtered.length === 0 ? (
+            <div className="donor-search-empty">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '4px' }}>
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              Tidak ditemukan donatur &ldquo;{query}&rdquo;
+            </div>
+          ) : (
+            filtered.map((d, i) => (
+              <div
+                key={d.id}
+                className={`donor-search-item${d.id === value ? ' selected' : ''}${i === highlightIdx ? ' highlighted' : ''}`}
+                onMouseDown={(e) => { e.preventDefault(); handleSelect(d); }}
+                onMouseEnter={() => setHighlightIdx(i)}
+              >
+                <div className="donor-search-item-avatar">
+                  {d.name.charAt(0).toUpperCase()}
+                </div>
+                <div className="donor-search-item-info">
+                  <span className="donor-search-item-name">{d.name}</span>
+                  {d.whatsapp && <span className="donor-search-item-wa">{d.whatsapp}</span>}
+                </div>
+                {d.id === value && (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 'auto', flexShrink: 0 }}>
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                )}
+              </div>
+            ))
+          )}
+          {filtered.length > 0 && (
+            <div className="donor-search-count">
+              {filtered.length} dari {donors.length} donatur
+            </div>
+          )}
+        </div>
+      )}
+      {/* Hidden required input for form validation */}
+      <input type="hidden" value={value} required />
+    </div>
+  );
+}
+
 // ── INPUT TETAP SECTION ───────────────────────────────────────────────
 function InputTetapSection({ passcode, fixedDonors, onSuccess, onRefreshDonors }: {
   passcode: string; fixedDonors: any[]; onSuccess: () => void; onRefreshDonors: () => void;
@@ -649,7 +808,9 @@ function InputTetapSection({ passcode, fixedDonors, onSuccess, onRefreshDonors }
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
 
   const handleSetoran = async (e: React.FormEvent) => {
-    e.preventDefault(); setLoading(true); setMsg(null);
+    e.preventDefault();
+    if (!formSetoran.donorId) { setMsg({ type: 'err', text: 'Silakan pilih donatur terlebih dahulu.' }); return; }
+    setLoading(true); setMsg(null);
     const res = await fetch('/api/fixed-donations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ passcode, ...formSetoran }) });
     setLoading(false);
     if (res.ok) { setMsg({ type: 'ok', text: 'Setoran berhasil dicatat.' }); setFormSetoran({ date: getLocalDatetime(), donorId: '', amount: '', paymentMethod: 'Cash', notes: '' }); onSuccess(); }
@@ -696,11 +857,12 @@ function InputTetapSection({ passcode, fixedDonors, onSuccess, onRefreshDonors }
                     <option value="E-Wallet DANA">E-Wallet DANA</option>
                   </select>
                 </div>
-                <div className="full-width"><label>Pilih Donatur Tetap</label>
-                  <select value={formSetoran.donorId} onChange={e => setFormSetoran({ ...formSetoran, donorId: e.target.value })} required>
-                    <option value="" disabled>Pilih donatur...</option>
-                    {fixedDonors.map(fd => <option key={fd.id} value={fd.id}>{fd.name}</option>)}
-                  </select>
+                <div className="full-width"><label>Cari Donatur Tetap</label>
+                  <DonorSearchSelect
+                    donors={fixedDonors}
+                    value={formSetoran.donorId}
+                    onChange={id => setFormSetoran({ ...formSetoran, donorId: id })}
+                  />
                 </div>
                 <div><label>Jumlah Setoran (Rp)</label><input type="number" placeholder="20000" value={formSetoran.amount} onChange={e => setFormSetoran({ ...formSetoran, amount: e.target.value })} required min="1000" /></div>
                 <div><label>Catatan Opsional</label><input type="text" placeholder="misal: Setoran Bulan ke-3" value={formSetoran.notes} onChange={e => setFormSetoran({ ...formSetoran, notes: e.target.value })} /></div>
@@ -727,6 +889,114 @@ function InputTetapSection({ passcode, fixedDonors, onSuccess, onRefreshDonors }
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// ── SETTINGS SECTION ─────────────────────────────────────────────────
+function SettingsSection({ passcode }: { passcode: string }) {
+  const [file, setFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('/api/settings').then(r => r.json()).then(d => {
+      if (d.exists) {
+        setPreviewUrl(`/field-condition.jpg?v=${Date.now()}`);
+      }
+    });
+  }, []);
+
+  const handleUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!file) return;
+
+    setLoading(true); setMsg(null);
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('passcode', passcode);
+
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMsg({ type: 'ok', text: 'Foto berhasil diperbarui!' });
+        setPreviewUrl(`/field-condition.jpg?v=${Date.now()}`);
+        setFile(null);
+      } else {
+        setMsg({ type: 'err', text: data.error || 'Gagal mengunggah.' });
+      }
+    } catch (err) {
+      setMsg({ type: 'err', text: 'Terjadi kesalahan sistem.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="admin-panel">
+      <div className="admin-panel-header">
+        <div>
+          <h3>Pengaturan Situs</h3>
+          <p>Kelola tampilan dan konten statis website</p>
+        </div>
+      </div>
+      <div className="admin-panel-body">
+        {msg && <div style={{ padding: '12px 16px', borderRadius: '8px', marginBottom: '20px', background: msg.type === 'ok' ? '#f0fdf4' : '#fef2f2', color: msg.type === 'ok' ? '#16a34a' : '#dc2626', border: `1px solid ${msg.type === 'ok' ? '#bbf7d0' : '#fecaca'}`, fontWeight: 600, fontSize: '14px' }}>{msg.text}</div>}
+        
+        <div style={{ maxWidth: '500px' }}>
+          <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#6b7280', marginBottom: '10px', textTransform: 'uppercase' }}>Foto Kondisi Lapangan (Preview WA & Header)</label>
+          
+          <div style={{ marginBottom: '20px', border: '2px dashed #e5e7eb', borderRadius: '12px', padding: '24px', textAlign: 'center', background: '#f9fafb' }}>
+            {previewUrl ? (
+              <div style={{ marginBottom: '20px' }}>
+                <img 
+                  src={previewUrl} 
+                  alt="Preview" 
+                  style={{ width: '240px', height: '240px', objectFit: 'cover', borderRadius: '12px', border: '4px solid white', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }} 
+                />
+                <p style={{ fontSize: '11px', color: '#9ca3af', marginTop: '10px' }}>Foto saat ini (Rasio 1:1)</p>
+              </div>
+            ) : (
+              <div style={{ padding: '40px 0', color: '#9ca3af' }}>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '12px', opacity: 0.5 }}>
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+                </svg>
+                <p style={{ fontSize: '14px', fontWeight: 500 }}>Belum ada foto yang diunggah</p>
+              </div>
+            )}
+
+            <form onSubmit={handleUpload}>
+              <input 
+                type="file" 
+                accept="image/*" 
+                onChange={e => setFile(e.target.files?.[0] || null)} 
+                style={{ display: 'none' }} 
+                id="file-upload"
+              />
+              <label htmlFor="file-upload" style={{ display: 'inline-block', padding: '10px 24px', background: 'white', border: '1.5px solid var(--border)', borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+                {file ? 'Ganti File: ' + file.name : 'Pilih Foto Baru'}
+              </label>
+              
+              {file && (
+                <div style={{ marginTop: '24px' }}>
+                  <button type="submit" disabled={loading} className="btn-submit" style={{ width: '100%', padding: '12px' }}>
+                    {loading ? 'Mengunggah...' : 'Simpan & Perbarui Foto'}
+                  </button>
+                  <button type="button" onClick={() => setFile(null)} style={{ background: 'transparent', border: 'none', color: '#ef4444', fontSize: '13px', marginTop: '12px', cursor: 'pointer', fontWeight: 700 }}>Batal</button>
+                </div>
+              )}
+            </form>
+          </div>
+          <p style={{ fontSize: '12px', color: '#9ca3af', lineHeight: '1.6', background: '#fefce8', padding: '12px', borderRadius: '8px', border: '1px solid #fef08a', color: '#854d0e' }}>
+            <strong>Catatan:</strong> Foto ini akan muncul di bagian paling atas halaman utama dan menjadi gambar pratinjau saat link website dibagikan ke WhatsApp. Gunakan foto berbentuk kotak (1:1) untuk hasil terbaik.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -1090,6 +1360,7 @@ export default function AdminPage() {
 
   const navItems: { id: NavMenu; label: string }[] = [
     { id: 'overview', label: 'Overview' },
+    { id: 'pengaturan', label: 'Pengaturan Situs' },
     { id: 'input-umum', label: 'Input Donasi Umum' },
     { id: 'input-tetap', label: 'Input Donatur Tetap' },
     { id: 'migrasi', label: 'Migrasi Dana' },
@@ -1102,11 +1373,13 @@ export default function AdminPage() {
     'input-tetap': 'Input Donatur Tetap',
     'migrasi': 'Migrasi Dana',
     'riwayat': 'Riwayat & Kelola Donatur',
+    'pengaturan': 'Pengaturan Situs',
   };
 
   // Nav icon SVGs (no emoji)
   const navIcons: Record<NavMenu, React.ReactElement> = {
     'overview': <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>,
+    'pengaturan': <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>,
     'input-umum': <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>,
     'input-tetap': <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
     'migrasi': <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>,
@@ -1130,7 +1403,7 @@ export default function AdminPage() {
       {/* SIDEBAR — desktop only */}
       <aside className="admin-sidebar">
         <div className="sidebar-logo">
-          <h2>Darul Ihsan</h2>
+          <h2>Darul Ihsan v2</h2>
           <p>Panel Admin Donasi</p>
         </div>
         <nav className="sidebar-nav">
@@ -1200,6 +1473,7 @@ export default function AdminPage() {
           {menu === 'input-tetap' && <InputTetapSection passcode={passcode} fixedDonors={fixedDonors} onSuccess={fetchAll} onRefreshDonors={fetchAll} />}
           {menu === 'migrasi' && <MigrasiSection passcode={passcode} gDonations={gDonations} fDonations={fDonations} migrations={migrations} onRefresh={fetchAll} onEdit={(it) => { setEditItem(it); setIsEditOpen(true); }} />}
           {menu === 'riwayat' && <RiwayatSection passcode={passcode} gDonations={gDonations} fDonations={fDonations} fixedDonors={fixedDonors} onRefresh={fetchAll} onEdit={(it) => { setEditItem(it); setIsEditOpen(true); }} />}
+          {menu === 'pengaturan' && <SettingsSection passcode={passcode} />}
         </div>
 
         <EditModal 

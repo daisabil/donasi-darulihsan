@@ -246,6 +246,16 @@ export default function Home() {
 
   return (
     <div className="card" style={{ marginTop: '40px' }}>
+      {/* SHOWCASE IMAGE */}
+      <div style={{ marginBottom: '25px', borderRadius: '16px', overflow: 'hidden', boxShadow: 'var(--card-shadow)', border: '1px solid var(--border)', background: '#f3f4f6' }}>
+        <img 
+          src={`/field-condition.jpg?v=${Date.now()}`} 
+          alt="Kondisi Lapangan" 
+          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+          style={{ width: '100%', aspectRatio: '1 / 1', objectFit: 'cover', display: 'block' }} 
+        />
+      </div>
+
       <div className="header">
         <h1>Pembangunan Halaman Masjid Darul Ihsan</h1>
         <p>InsyaAllah, halaman Masjid Darul Ihsan akan <strong>dipaving</strong> agar bermanfaat untuk <strong>kegiatan sekolah</strong> dan <strong>fasilitas umum</strong> bagi masyarakat. Mari ambil bagian dalam kebaikan ini.</p>

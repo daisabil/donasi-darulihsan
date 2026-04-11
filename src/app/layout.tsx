@@ -1,5 +1,3 @@
-'use client';
-import { usePathname } from "next/navigation";
 import "./globals.css";
 
 export default function RootLayout({
@@ -7,13 +5,27 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = usePathname();
-
   return (
     <html lang="id">
       <head>
         <title>Live Update Donasi Lapangan SD</title>
         <meta name="description" content="Aplikasi transparansi update galang dana lapangan SD secara real-time." />
+        
+        {/* Open Graph / Facebook / WhatsApp */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://donasi-darulihsan.vercel.app/" />
+        <meta property="og:title" content="Donasi Pembangunan Halaman Masjid Darul Ihsan" />
+        <meta property="og:description" content="Mari berpartisipasi dalam pembangunan paving halaman Masjid Darul Ihsan untuk kenyamanan santri dan jamaah." />
+        <meta property="og:image" content="/field-condition.jpg" />
+        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:image:width" content="600" />
+        <meta property="og:image:height" content="600" />
+
+        {/* Twitter */}
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:title" content="Donasi Pembangunan Halaman Masjid Darul Ihsan" />
+        <meta property="twitter:description" content="Mari berpartisipasi dalam pembangunan paving halaman Masjid Darul Ihsan untuk kenyamanan santri dan jamaah." />
+        <meta property="twitter:image" content="/field-condition.jpg" />
       </head>
       <body>
         {children}
