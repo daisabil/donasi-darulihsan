@@ -73,9 +73,9 @@ export async function GET() {
               bottom: 0,
               left: 0,
               right: 0,
-              height: '50%',
+              height: '40%',
               display: 'flex',
-              background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.1) 100%)',
+              background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%)',
             }}
           />
 
@@ -90,14 +90,8 @@ export async function GET() {
             }}
           >
             <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '20px' }}>
-              <span style={{ fontSize: '32px', color: '#4ade80', fontWeight: 'bold', marginBottom: '4px', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+              <span style={{ fontSize: '36px', color: '#4ade80', fontWeight: 'bold', marginBottom: '4px', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
                 Donasi Pembangunan Lapangan
-              </span>
-              <span style={{ fontSize: '48px', color: 'white', fontWeight: 800, textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
-                {formatRp(total)}
-              </span>
-              <span style={{ fontSize: '24px', color: '#ccc', fontWeight: 500 }}>
-                terkumpul dari target {formatRp(TARGET)}
               </span>
             </div>
 

@@ -940,9 +940,9 @@ function SettingsSection({ passcode }: { passcode: string }) {
                 <img 
                   src={previewUrl} 
                   alt="Preview" 
-                  style={{ width: '100%', maxWidth: '400px', aspectRatio: '1 / 1', objectFit: 'cover', borderRadius: '12px', border: '4px solid white', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }} 
+                  style={{ width: '100%', maxWidth: '400px', aspectRatio: '3 / 2', objectFit: 'cover', borderRadius: '12px', border: '4px solid white', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }} 
                 />
-                <p style={{ fontSize: '11px', color: '#9ca3af', marginTop: '10px' }}>Foto saat ini (Rasio 1:1 Square)</p>
+                <p style={{ fontSize: '11px', color: '#9ca3af', marginTop: '10px' }}>Foto saat ini (Rasio 3:2 Landscape)</p>
               </div>
             ) : (
               <div style={{ padding: '40px 0', color: '#9ca3af' }}>
@@ -976,7 +976,7 @@ function SettingsSection({ passcode }: { passcode: string }) {
             </form>
           </div>
           <p style={{ fontSize: '12px', lineHeight: '1.6', background: '#fefce8', padding: '12px', borderRadius: '8px', border: '1px solid #fef08a', color: '#854d0e' }}>
-            <strong>Catatan:</strong> Foto ini akan muncul di bagian paling atas halaman utama dan menjadi gambar pratinjau saat link website dibagikan ke WhatsApp. Gunakan foto **kotak (1:1)** untuk hasil terbaik.
+            <strong>Catatan:</strong> Foto ini akan muncul di bagian paling atas halaman utama dan menjadi gambar pratinjau saat link website dibagikan ke WhatsApp. Gunakan foto **landscape (3:2)** untuk hasil terbaik.
           </p>
         </div>
       </div>

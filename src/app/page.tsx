@@ -315,14 +315,15 @@ export default function Home() {
   // -------------- RENDER 'HOME' -------------- 
 
   return (
-    <div className="card" style={{ marginTop: '40px' }}>
+    <>
+      <div className="card" style={{ marginTop: '40px' }}>
       {/* SHOWCASE IMAGE */}
       <div style={{ marginBottom: '25px', borderRadius: '16px', overflow: 'hidden', boxShadow: 'var(--card-shadow)', border: '1px solid var(--border)', background: '#f3f4f6' }}>
           <img 
             src="/api/settings/image" 
             alt="Kondisi Lapangan" 
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-            style={{ width: '100%', aspectRatio: '1 / 1', objectFit: 'cover', display: 'block' }} 
+            style={{ width: '100%', aspectRatio: '3 / 2', objectFit: 'cover', display: 'block' }} 
           />
         </div>
 
@@ -436,7 +437,8 @@ export default function Home() {
           </a>
         </div>
       </div>
-      <ShareMenu />
     </div>
+    <ShareMenu />
+    </>
   );
 }
