@@ -22,7 +22,12 @@ export async function GET() {
       where: { key: 'field_condition_image' },
     });
 
-    const backgroundImage = setting?.value || '';
+    const backgroundImageDataUrl = setting?.value || '';
+    let backgroundImageBuffer: Buffer | null = null;
+    if (backgroundImageDataUrl.includes('base64,')) {
+      const base64Part = backgroundImageDataUrl.split('base64,')[1];
+      backgroundImageBuffer = Buffer.from(base64Part, 'base64');
+    }
 
     // Format currency
     const formatRp = (n: number) => 
@@ -44,9 +49,10 @@ export async function GET() {
           }}
         >
           {/* Background Image */}
-          {backgroundImage && (
+          {backgroundImageBuffer && (
             <img
-              src={backgroundImage}
+              // @ts-ignore
+              src={backgroundImageBuffer}
               style={{
                 position: 'absolute',
                 top: 0,
