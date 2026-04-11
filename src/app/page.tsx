@@ -166,6 +166,12 @@ export default function Home() {
             </table>
           </div>
         </div>
+        <div style={{ marginTop: '30px', paddingTop: '16px', borderTop: '1px solid #f0f0f0', opacity: 0.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: '11px', letterSpacing: '0.5px' }}>Darul Ihsan</span>
+          <a href="https://daisabil.com" target="_blank" rel="noopener noreferrer" style={{ fontSize: '11px', color: 'inherit', textDecoration: 'none', letterSpacing: '0.5px' }}>
+            ©<b>daisabil 2026</b>
+          </a>
+        </div>
       </div>
     );
   }
@@ -232,6 +238,12 @@ export default function Home() {
               </tbody>
             </table>
           </div>
+        </div>
+        <div style={{ marginTop: '30px', paddingTop: '16px', borderTop: '1px solid #f0f0f0', opacity: 0.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: '11px', letterSpacing: '0.5px' }}>Darul Ihsan</span>
+          <a href="https://daisabil.com" target="_blank" rel="noopener noreferrer" style={{ fontSize: '11px', color: 'inherit', textDecoration: 'none', letterSpacing: '0.5px' }}>
+            ©<b>daisabil 2026</b>
+          </a>
         </div>
       </div>
     );

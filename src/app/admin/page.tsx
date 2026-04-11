@@ -1306,6 +1306,12 @@ export default function AdminPage() {
             onKeyDown={e => e.key === 'Enter' && handleLogin()}
           />
           <button onClick={handleLogin}>Masuk ke Dashboard</button>
+          <div style={{ marginTop: '24px', paddingTop: '16px', borderTop: '1px solid #f0f0f0', opacity: 0.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '10px' }}>Darul Ihsan</span>
+            <a href="https://daisabil.com" target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: 'inherit', textDecoration: 'none' }}>
+              ©<b>daisabil 2026</b>
+            </a>
+          </div>
         </div>
       </div>
     );
