@@ -16,7 +16,7 @@ export default function RootLayout({
         <meta property="og:url" content="https://donasi-darulihsan.vercel.app/" />
         <meta property="og:title" content="Donasi Pembangunan Halaman Masjid Darul Ihsan" />
         <meta property="og:description" content="Mari berpartisipasi dalam pembangunan paving halaman Masjid Darul Ihsan untuk kenyamanan santri dan jamaah." />
-        <meta property="og:image" content="/api/settings/image" />
+        <meta property="og:image" content="https://donasi-darulihsan.vercel.app/api/settings/image" />
         <meta property="og:image:type" content="image/jpeg" />
         <meta property="og:image:width" content="600" />
         <meta property="og:image:height" content="600" />
@@ -25,7 +25,7 @@ export default function RootLayout({
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:title" content="Donasi Pembangunan Halaman Masjid Darul Ihsan" />
         <meta property="twitter:description" content="Mari berpartisipasi dalam pembangunan paving halaman Masjid Darul Ihsan untuk kenyamanan santri dan jamaah." />
-        <meta property="twitter:image" content="/api/settings/image" />
+        <meta property="twitter:image" content="https://donasi-darulihsan.vercel.app/api/settings/image" />
       </head>
       <body>
         {children}
