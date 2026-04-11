@@ -49,8 +49,7 @@ export async function GET() {
             position: 'relative',
           }}
         >
-          {/* Background Image */}
-          {backgroundImageBuffer && (
+          {backgroundImageBuffer ? (
             <img
               // @ts-ignore
               src={backgroundImageBuffer}
@@ -61,67 +60,12 @@ export async function GET() {
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
-                opacity: 0.8,
+                opacity: 1,
               }}
             />
+          ) : (
+             <div style={{ color: 'white', fontSize: 32 }}>Gambar Kosong</div>
           )}
-
-          {/* Gradient Overlay */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: '40%',
-              display: 'flex',
-              background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%)',
-            }}
-          />
-
-          {/* Content */}
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100%',
-              padding: '40px',
-              position: 'relative',
-            }}
-          >
-            <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '20px' }}>
-              <span style={{ fontSize: '36px', color: '#4ade80', fontWeight: 'bold', marginBottom: '4px', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
-                Donasi Pembangunan Lapangan
-              </span>
-            </div>
-
-            {/* Progress Bar Container */}
-            <div
-              style={{
-                display: 'flex',
-                height: '24px',
-                width: '100%',
-                backgroundColor: 'rgba(255,255,255,0.2)',
-                borderRadius: '12px',
-                overflow: 'hidden',
-                border: '1px solid rgba(255,255,255,0.3)',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  height: '100%',
-                  width: `${progress}%`,
-                  backgroundColor: '#4ade80',
-                  borderRadius: '12px',
-                }}
-              />
-            </div>
-            
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
-              <span style={{ color: 'white', fontSize: '20px', fontWeight: 'bold' }}>{progress.toFixed(1)}% Tercapai</span>
-            </div>
-          </div>
         </div>
       ),
       {

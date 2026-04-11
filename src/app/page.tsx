@@ -7,8 +7,8 @@ const ShareMenu = () => {
 
   const shareData = {
     title: 'Donasi Pembangunan Halaman Masjid Darul Ihsan',
-    text: 'Mari berpartisipasi dalam pembangunan paving halaman Masjid Darul Ihsan untuk kenyamanan santri dan jamaah.',
-    url: typeof window !== 'undefined' ? window.location.href : 'https://donasi-darulihsan.daisabil.com/',
+    text: '',
+    url: 'https://donasi-darulihsan.daisabil.com/',
   };
 
   const handleNativeShare = async () => {
@@ -29,7 +29,7 @@ const ShareMenu = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const waLink = `https://wa.me/?text=${encodeURIComponent(shareData.text + ' ' + shareData.url)}`;
+  const waLink = `https://wa.me/?text=${encodeURIComponent(shareData.url)}`;
   const fbLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareData.url)}`;
 
   return (

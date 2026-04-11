@@ -16,8 +16,7 @@ export default function RootLayout({
          <meta property="og:url" content="https://donasi-darulihsan.daisabil.com/" />
         <meta property="og:title" content="Donasi Pembangunan Halaman Masjid Darul Ihsan" />
         <meta property="og:description" content="Mari berpartisipasi dalam pembangunan paving halaman Masjid Darul Ihsan untuk kenyamanan santri dan jamaah." />
-        <meta property="og:image" content="https://donasi-darulihsan.daisabil.com/api/settings/image?v=1" />
-        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:image" content={`https://donasi-darulihsan.daisabil.com/api/settings/image?v=${Date.now()}`} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="800" />
 
@@ -25,7 +24,7 @@ export default function RootLayout({
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:title" content="Donasi Pembangunan Halaman Masjid Darul Ihsan" />
         <meta property="twitter:description" content="Mari berpartisipasi dalam pembangunan paving halaman Masjid Darul Ihsan untuk kenyamanan santri dan jamaah." />
-        <meta property="twitter:image" content="https://donasi-darulihsan.daisabil.com/api/settings/image?v=1" />
+        <meta property="twitter:image" content={`https://donasi-darulihsan.daisabil.com/api/settings/image?v=${Date.now()}`} />
       </head>
       <body>
         {children}
