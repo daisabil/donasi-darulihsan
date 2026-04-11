@@ -354,9 +354,9 @@ export default function Home() {
       <div style={{ marginTop: '30px', borderTop: '1px solid #eee', paddingTop: '20px', textAlign: 'center', fontSize: '13px', color: '#666', lineHeight: '1.6' }}>
         <p style={{ color: 'var(--primary)', fontWeight: 'bold', margin: '0 0 5px 0' }}>Transparansi adalah prioritas kami.</p>
         <p style={{ margin: '0' }}>Laporan ini diperbarui secara berkala oleh bendahara panitia, Terima kasih atas kepercayaan dan dukungan Anda 🙏.</p>
-        <div style={{ marginTop: '20px', opacity: 0.4, transition: 'opacity 0.2s' }}>
-          <a href="https://daisabil.com" target="_blank" rel="noopener noreferrer" style={{ fontSize: '12px', color: 'inherit', textDecoration: 'none', letterSpacing: '0.5px' }}>
-            © @daisabil
+        <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '1px solid #f0f0f0', opacity: 0.5, transition: 'opacity 0.2s' }}>
+          <a href="https://daisabil.com" target="_blank" rel="noopener noreferrer" style={{ fontSize: '11px', color: 'inherit', textDecoration: 'none', letterSpacing: '1px' }}>
+            © daisabil
           </a>
         </div>
       </div>
