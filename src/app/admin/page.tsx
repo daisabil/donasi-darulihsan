@@ -517,7 +517,7 @@ function OverviewSection({ gDonations, fDonations, migrations, visitorTotal }: {
   gDonations: any[]; fDonations: any[]; migrations: any[]; visitorTotal: number;
 }) {
   const TARGET = 200000000;
-  const { cash, bank, dana, total } = calcBalances(gDonations, fDonations, migrations);
+  const { cash, bank, total } = calcBalances(gDonations, fDonations, migrations);
   const pct = Math.min(100, (total / TARGET) * 100);
 
   return (
@@ -615,7 +615,6 @@ function InputUmumSection({ passcode, onSuccess }: { passcode: string; onSuccess
               <select value={form.paymentMethod} onChange={e => setForm({ ...form, paymentMethod: e.target.value })}>
                 <option value="Cash">Uang Tunai (Cash)</option>
                 <option value="Transfer Bank">Transfer Rekening Bank</option>
-                <option value="E-Wallet DANA">E-Wallet DANA</option>
               </select>
             </div>
             <div className="full-width"><label>Nama Lengkap Donatur</label><input type="text" placeholder="Contoh: Bapak Ahmad Fulan" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required /></div>
@@ -847,7 +846,6 @@ function InputTetapSection({ passcode, fixedDonors, onSuccess, onRefreshDonors }
                   <select value={formSetoran.paymentMethod} onChange={e => setFormSetoran({ ...formSetoran, paymentMethod: e.target.value })}>
                     <option value="Cash">Uang Tunai (Cash)</option>
                     <option value="Transfer Bank">Transfer Rekening Bank</option>
-                    <option value="E-Wallet DANA">E-Wallet DANA</option>
                   </select>
                 </div>
                 <div className="full-width"><label>Cari Donatur Tetap</label>
@@ -998,14 +996,14 @@ function SettingsSection({ passcode }: { passcode: string }) {
 function MigrasiSection({ passcode, gDonations, fDonations, migrations, onRefresh, onEdit }: {
   passcode: string; gDonations: any[]; fDonations: any[]; migrations: any[]; onRefresh: () => void; onEdit: (item: any) => void;
 }) {
-  const { cash, bank, dana } = calcBalances(gDonations, fDonations, migrations);
+  const { cash, bank } = calcBalances(gDonations, fDonations, migrations);
   const [form, setForm] = useState({ date: getLocalDatetime(), fromMethod: 'Cash', toMethod: 'Transfer Bank', amount: '', notes: '' });
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
 
-  const saldoOf = (m: string) => m === 'Cash' ? cash : m === 'Transfer Bank' ? bank : dana;
-  const methodColor = (m: string) => m === 'Cash' ? '#f59e0b' : m === 'Transfer Bank' ? 'var(--primary)' : '#6366f1';
-  const methodBg = (m: string) => m === 'Cash' ? '#fffbeb' : m === 'Transfer Bank' ? 'var(--primary-light)' : '#eef2ff';
+  const saldoOf = (m: string) => m === 'Cash' ? cash : bank;
+  const methodColor = (m: string) => m === 'Cash' ? '#f59e0b' : 'var(--primary)';
+  const methodBg = (m: string) => m === 'Cash' ? '#fffbeb' : 'var(--primary-light)';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

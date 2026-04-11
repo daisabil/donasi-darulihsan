@@ -12,7 +12,6 @@ export default function Home() {
   const [view, setView] = useState<'home' | 'all-umum' | 'all-tetap'>('home');
   const [activeTab, setActiveTab] = useState('umum');
   const [copied, setCopied] = useState(false);
-  const [copiedDana, setCopiedDana] = useState(false);
   const [filterMonth, setFilterMonth] = useState('semua');
 
   useEffect(() => {
