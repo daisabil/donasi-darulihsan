@@ -1122,6 +1122,98 @@ body:has(.admin-root) {
 }
 
 
+/* =========================================================
+   FLOATING SHARE MENU (GLASSMORPHISM)
+   ========================================================= */
+.floating-share-wrapper {
+  position: fixed;
+  bottom: 40px;
+  right: 30px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 15px;
+}
 
+.floating-share-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
 
+.floating-share-btn:hover {
+  transform: translateY(-4px) scale(1.05);
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 12px 36px rgba(0, 174, 239, 0.25);
+  color: var(--primary-dark);
+}
 
+.share-menu-glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 16px;
+  padding: 16px;
+  min-width: 220px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  animation: slideUpShare 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes slideUpShare {
+  from { opacity: 0; transform: translateY(20px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.share-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.share-menu-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.share-icon {
+  display: flex;
+  align-items: center;
+}
+
+.share-icon.wa::before { content: "📱"; font-size: 18px; margin-right: 8px; }
+.share-icon.fb::before { content: "📘"; font-size: 18px; margin-right: 8px; }
+.share-icon.link::before { content: "🔗"; font-size: 18px; margin-right: 8px; }
+
+.share-overlay {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  z-index: 999;
+}
+
+@media (max-width: 600px) {
+  .floating-share-wrapper {
+    bottom: 25px;
+    right: 20px;
+  }
+}

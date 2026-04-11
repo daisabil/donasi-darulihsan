@@ -23,10 +23,11 @@ export async function GET() {
     });
 
     const backgroundImageDataUrl = setting?.value || '';
-    let backgroundImageBuffer: Buffer | null = null;
+    let backgroundImageBuffer: ArrayBuffer | null = null;
     if (backgroundImageDataUrl.includes('base64,')) {
       const base64Part = backgroundImageDataUrl.split('base64,')[1];
-      backgroundImageBuffer = Buffer.from(base64Part, 'base64');
+      const nodeBuffer = Buffer.from(base64Part, 'base64');
+      backgroundImageBuffer = nodeBuffer.buffer.slice(nodeBuffer.byteOffset, nodeBuffer.byteOffset + nodeBuffer.byteLength);
     }
 
     // Format currency

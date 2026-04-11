@@ -1,6 +1,69 @@
 'use client';
 import { useEffect, useState } from 'react';
 
+const ShareMenu = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const shareData = {
+    title: 'Donasi Pembangunan Halaman Masjid Darul Ihsan',
+    text: 'Mari berpartisipasi dalam pembangunan paving halaman Masjid Darul Ihsan untuk kenyamanan santri dan jamaah.',
+    url: typeof window !== 'undefined' ? window.location.href : 'https://donasi-darulihsan.daisabil.com/',
+  };
+
+  const handleNativeShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.log('Error sharing:', err);
+      }
+    } else {
+      setIsOpen(!isOpen);
+    }
+  };
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(shareData.url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const waLink = `https://wa.me/?text=${encodeURIComponent(shareData.text + ' ' + shareData.url)}`;
+  const fbLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareData.url)}`;
+
+  return (
+    <>
+      <div className="floating-share-wrapper">
+        {isOpen && (
+          <div className="share-menu-glass">
+            <h4 style={{ margin: '0 0 12px 0', fontSize: '13px', color: '#555', textAlign: 'center', fontWeight: 'bold' }}>Bagikan Kebaikan</h4>
+            <a href={waLink} target="_blank" rel="noreferrer" className="share-menu-item">
+              <span className="share-icon wa">WhatsApp / WA Story</span>
+            </a>
+            <a href={fbLink} target="_blank" rel="noreferrer" className="share-menu-item">
+              <span className="share-icon fb">Facebook / FB Story</span>
+            </a>
+            <button onClick={copyLink} className="share-menu-item" style={{ width: '100%', border: 'none', background: 'transparent', textAlign: 'left', fontFamily: 'inherit' }}>
+              <span className="share-icon link">{copied ? 'Tersalin!' : 'Salin Link (IG Story, dll)'}</span>
+            </button>
+          </div>
+        )}
+        <button className="floating-share-btn" onClick={handleNativeShare} title="Bagikan Halaman Ini">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+        </button>
+      </div>
+      {isOpen && <div className="share-overlay" onClick={() => setIsOpen(false)} />}
+    </>
+  );
+};
+
 export default function Home() {
   const TARGET = 200000000;
   const [loading, setLoading] = useState(true);
@@ -373,6 +436,7 @@ export default function Home() {
           </a>
         </div>
       </div>
+      <ShareMenu />
     </div>
   );
 }
