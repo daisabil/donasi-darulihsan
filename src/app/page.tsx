@@ -195,7 +195,6 @@ export default function Home() {
             <p style={{ margin: '0 0 5px 0', fontSize: '12px', color: '#777' }}>Total Terkumpul</p>
             <p style={{ margin: 0, fontSize: '20px', fontWeight: 'bold', color: 'var(--primary)' }}>{formatRp(filtered.reduce((s, d) => s + d.amount, 0))}</p>
           </div>
-          </div>
         </div>
 
         <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', alignItems: 'center' }}>
