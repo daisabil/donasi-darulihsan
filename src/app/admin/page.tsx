@@ -992,7 +992,7 @@ function SettingsSection({ passcode }: { passcode: string }) {
               )}
             </form>
           </div>
-          <p style={{ fontSize: '12px', color: '#9ca3af', lineHeight: '1.6', background: '#fefce8', padding: '12px', borderRadius: '8px', border: '1px solid #fef08a', color: '#854d0e' }}>
+          <p style={{ fontSize: '12px', lineHeight: '1.6', background: '#fefce8', padding: '12px', borderRadius: '8px', border: '1px solid #fef08a', color: '#854d0e' }}>
             <strong>Catatan:</strong> Foto ini akan muncul di bagian paling atas halaman utama dan menjadi gambar pratinjau saat link website dibagikan ke WhatsApp. Gunakan foto berbentuk kotak (1:1) untuk hasil terbaik.
           </p>
         </div>
