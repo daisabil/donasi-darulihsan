@@ -7,7 +7,7 @@ type NavMenu = 'overview' | 'input-umum' | 'input-tetap' | 'migrasi' | 'riwayat'
 type ShowMode = 'both' | 'income' | 'visitor';
 type PeriodMode = 'monthly' | 'weekly' | 'daily' | 'hourly';
 
-const PAYMENT_METHODS = ['Cash', 'Transfer Bank'];
+const PAYMENT_METHODS = ['Cash', 'Transfer'];
 const pad = (n: number) => String(n).padStart(2, '0');
 
 function formatRp(n: number) {
@@ -25,8 +25,7 @@ function formatRpShort(v: number) {
 function formatTgl(t: string) {
   const d = new Date(t);
   if (isNaN(d.getTime())) return '';
-  return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) +
-    ' ' + d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: '2-digit' });
 }
 
 function getLocalDatetime() {
@@ -218,12 +217,12 @@ function calcBalances(gDonations: any[], fDonations: any[], migrations: any[]) {
   let cash = 0, bank = 0;
   [...gDonations, ...fDonations].forEach(d => {
     if (d.paymentMethod === 'Cash') cash += d.amount;
-    else if (d.paymentMethod === 'Transfer Bank') bank += d.amount;
+    else if (d.paymentMethod === 'Transfer') bank += d.amount;
   });
   migrations.forEach(m => {
     const apply = (method: string, sign: number) => {
       if (method === 'Cash') cash += sign * m.amount;
-      else if (method === 'Transfer Bank') bank += sign * m.amount;
+      else if (method === 'Transfer') bank += sign * m.amount;
     };
     apply(m.fromMethod, -1);
     apply(m.toMethod, 1);
@@ -527,7 +526,7 @@ function OverviewSection({ gDonations, fDonations, migrations, visitorTotal }: {
         <div className="stat-card bank">
           <div className="label">Saldo Bank</div>
           <div className="value">{formatRp(bank)}</div>
-          <div className="sublabel">Transfer rekening</div>
+          <div className="sublabel">Transfer</div>
         </div>
         <div className="stat-card total">
           <div className="label">Total Dana</div>
@@ -608,8 +607,8 @@ function InputUmumSection({ passcode, onSuccess }: { passcode: string; onSuccess
             <div><label>Tanggal &amp; Waktu</label><input type="datetime-local" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} required /></div>
             <div><label>Metode Pembayaran</label>
               <select value={form.paymentMethod} onChange={e => setForm({ ...form, paymentMethod: e.target.value })}>
-                <option value="Cash">Uang Tunai (Cash)</option>
-                <option value="Transfer Bank">Transfer Rekening Bank</option>
+                <option value="Cash">Cash</option>
+                <option value="Transfer">Transfer</option>
               </select>
             </div>
             <div className="full-width"><label>Nama Lengkap Donatur</label><input type="text" placeholder="Contoh: Bapak Ahmad Fulan" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required /></div>
@@ -838,8 +837,8 @@ function InputTetapSection({ passcode, fixedDonors, onSuccess, onRefreshDonors }
                 <div><label>Tanggal &amp; Waktu</label><input type="datetime-local" value={formSetoran.date} onChange={e => setFormSetoran({ ...formSetoran, date: e.target.value })} required /></div>
                 <div><label>Metode Pembayaran</label>
                   <select value={formSetoran.paymentMethod} onChange={e => setFormSetoran({ ...formSetoran, paymentMethod: e.target.value })}>
-                    <option value="Cash">Uang Tunai (Cash)</option>
-                    <option value="Transfer Bank">Transfer Rekening Bank</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Transfer">Transfer</option>
                   </select>
                 </div>
                 <div className="full-width"><label>Cari Donatur Tetap</label>
@@ -990,7 +989,7 @@ function MigrasiSection({ passcode, gDonations, fDonations, migrations, onRefres
   passcode: string; gDonations: any[]; fDonations: any[]; migrations: any[]; onRefresh: () => void; onEdit: (item: any) => void;
 }) {
   const { cash, bank } = calcBalances(gDonations, fDonations, migrations);
-  const [form, setForm] = useState({ date: getLocalDatetime(), fromMethod: 'Cash', toMethod: 'Transfer Bank', amount: '', notes: '' });
+  const [form, setForm] = useState({ date: getLocalDatetime(), fromMethod: 'Cash', toMethod: 'Transfer', amount: '', notes: '' });
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
 
@@ -1008,7 +1007,7 @@ function MigrasiSection({ passcode, gDonations, fDonations, migrations, onRefres
     setLoading(false);
     if (res.ok) {
       setMsg({ type: 'ok', text: `Migrasi ${formatRp(Number(form.amount))} dari ${form.fromMethod} ke ${form.toMethod} berhasil.` });
-      setForm({ date: getLocalDatetime(), fromMethod: 'Cash', toMethod: 'Transfer Bank', amount: '', notes: '' });
+      setForm({ date: getLocalDatetime(), fromMethod: 'Cash', toMethod: 'Transfer', amount: '', notes: '' });
       onRefresh();
     } else { setMsg({ type: 'err', text: 'Gagal menyimpan migrasi.' }); }
   };
@@ -1022,7 +1021,7 @@ function MigrasiSection({ passcode, gDonations, fDonations, migrations, onRefres
   return (
     <div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: '16px', marginBottom: '24px' }}>
-        {[{ m: 'Cash', s: cash }, { m: 'Transfer Bank', s: bank }].map(({ m, s }) => (
+        {[{ m: 'Cash', s: cash }, { m: 'Transfer', s: bank }].map(({ m, s }) => (
           <div key={m} className="admin-panel" style={{ marginBottom: 0, borderTop: `3px solid ${methodColor(m)}` }}>
             <div className="admin-panel-body" style={{ padding: '16px 20px' }}>
               <div style={{ fontSize: '11px', color: '#6b7280', fontWeight: 700, textTransform: 'uppercase', marginBottom: '6px' }}>Saldo {m}</div>
@@ -1062,7 +1061,7 @@ function MigrasiSection({ passcode, gDonations, fDonations, migrations, onRefres
               <div><label>Ke Metode</label><select value={form.toMethod} onChange={e => setForm({ ...form, toMethod: e.target.value })}>{PAYMENT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}</select></div>
               <div><label>Jumlah (Rp)</label><input type="number" placeholder="1000000" value={form.amount} onChange={e => setForm({ ...form, amount: e.target.value })} required min="1000" /></div>
               <div><label>Tanggal Migrasi</label><input type="datetime-local" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} required /></div>
-              <div className="full-width"><label>Catatan (Opsional)</label><input type="text" placeholder="misal: Setor tunai ke rekening bank Kaltimtara" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} /></div>
+              <div className="full-width"><label>Catatan (Opsional)</label><input type="text" placeholder="misal: Setor tunai ke rekening bank" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} /></div>
             </div>
             <button type="submit" className="btn-submit" disabled={loading} style={{ marginTop: '8px' }}>{loading ? 'Memproses...' : 'Konfirmasi Migrasi Dana'}</button>
           </form>

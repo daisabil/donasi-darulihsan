@@ -89,7 +89,7 @@ export default function Home() {
   const formatTgl = (t: string) => {
     const d = new Date(t);
     if (isNaN(d.getTime())) return '';
-    return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: '2-digit' });
   };
 
   const formatTglShort = (t: string) => {
